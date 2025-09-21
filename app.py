@@ -45,24 +45,19 @@ else:
 
 # --- Corrected Code ---
 
-def get_gemini_analysis(prompt):
+# --- Corrected Code ---
+def get_gemini_analysis(prompt, api_key): # Add api_key as an argument
     """Generic function to call the Gemini API."""
     if st.session_state.get('ai_disabled', False):
         st.warning("AI features are currently disabled by the user.")
         return None
     
-    # 1. Get the key directly from session_state
-    api_key = st.session_state.get('gemini_key')
-        
-    # 2. Check this new variable instead
+    # Check the passed-in api_key argument directly
     if not api_key:
         st.warning("Please enter your Gemini API key for AI analysis.")
         return None
     try:
-        # 3. Configure the API if not already done
-        # This is a good practice to avoid re-configuring on every call
         genai.configure(api_key=api_key)
-
         model = genai.GenerativeModel('gemini-1.5-flash-latest')
         with st.spinner("🤖 Calling the AI... Please wait."):
             response = model.generate_content(prompt)
@@ -70,9 +65,9 @@ def get_gemini_analysis(prompt):
     except Exception as e:
         st.error(f"Could not get analysis from Gemini. Error: {e}")
         return None
-
+# --- Corrected Code ---
 @st.cache_data
-def get_ai_column_mapping(raw_columns, target_schema):
+def get_ai_column_mapping(raw_columns, target_schema, api_key): # Add api_key
     """
     Uses AI to map raw CSV columns to the application's standard schema.
     """
@@ -86,7 +81,7 @@ def get_ai_column_mapping(raw_columns, target_schema):
     - If a standard header has NO corresponding match in the user's list, map it to null.
     - Your entire response must be ONLY the JSON object, with no other text or formatting.
     """
-    response_text = get_gemini_analysis(prompt)
+    response_text = get_gemini_analysis(prompt, api_key) # Pass the api_key down
     if not response_text:
         return None
     try:
@@ -428,18 +423,22 @@ with st.sidebar.expander("📝 Column Mapping", expanded=True):
         gw_mapping = manual_column_mapper(gw_station_fname, gw_raw_cols, schemas['station'])
         rf_mapping = manual_column_mapper(rf_station_fname, rf_raw_cols, schemas['station'])
         ts_mapping = manual_column_mapper(ts_fname, ts_raw_cols, schemas['timeseries'])
+    # --- Corrected Code ---
     else:
         st.subheader("🤖 AI-Assisted Column Mapping")
+        # Get the API key from session state ONCE before making the calls
+        api_key = st.session_state.get("gemini_key")
+
         st.write(f"**`{gw_station_fname}` (as GW):**")
-        gw_mapping = get_ai_column_mapping(gw_raw_cols, schemas['station'])
+        gw_mapping = get_ai_column_mapping(gw_raw_cols, schemas['station'], api_key)
         if gw_mapping: st.json(gw_mapping, expanded=False)
 
         st.write(f"**`{rf_station_fname}` (as RF):**")
-        rf_mapping = get_ai_column_mapping(rf_raw_cols, schemas['station'])
+        rf_mapping = get_ai_column_mapping(rf_raw_cols, schemas['station'], api_key)
         if rf_mapping: st.json(rf_mapping, expanded=False)
 
         st.write(f"**`{ts_fname}` (as Time-Series):**")
-        ts_mapping = get_ai_column_mapping(ts_raw_cols, schemas['timeseries'])
+        ts_mapping = get_ai_column_mapping(ts_raw_cols, schemas['timeseries'], api_key)
         if ts_mapping: st.json(ts_mapping, expanded=False)
 
 
