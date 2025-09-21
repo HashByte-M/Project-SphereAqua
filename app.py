@@ -43,17 +43,26 @@ else:
 
 # -------------------- Helper Functions --------------------
 
+# --- Corrected Code ---
+
 def get_gemini_analysis(prompt):
     """Generic function to call the Gemini API."""
-    # --- MODIFIED: Check if AI is disabled before making any call ---
     if st.session_state.get('ai_disabled', False):
         st.warning("AI features are currently disabled by the user.")
         return None
+    
+    # 1. Get the key directly from session_state
+    api_key = st.session_state.get('gemini_key')
         
-    if not gemini_api_key:
+    # 2. Check this new variable instead
+    if not api_key:
         st.warning("Please enter your Gemini API key for AI analysis.")
         return None
     try:
+        # 3. Configure the API if not already done
+        # This is a good practice to avoid re-configuring on every call
+        genai.configure(api_key=api_key)
+
         model = genai.GenerativeModel('gemini-1.5-flash-latest')
         with st.spinner("🤖 Calling the AI... Please wait."):
             response = model.generate_content(prompt)
