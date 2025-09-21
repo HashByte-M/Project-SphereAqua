@@ -1,0 +1,101 @@
+station_name,District_name,State_name,Latitude,Longitude,Agency_name,Basin
+RFS001,Anantapur,Andhra Pradesh,12.866545,77.197493,Andhra Pradesh Agriculture Dept,Godavari
+RFS002,Chittoor,Andhra Pradesh,13.253902,83.709591,IMD Hyderabad,Godavari
+RFS003,Visakhapatnam,Andhra Pradesh,16.253414,79.157582,IMD Hyderabad,Krishna
+RFS004,Guntur,Andhra Pradesh,13.445402,80.987696,CGWB,Krishna
+RFS005,Krishna,Andhra Pradesh,13.646438,83.747245,IMD Hyderabad,Pennar
+RFS006,Kurnool,Andhra Pradesh,15.143163,76.55276,CGWB,Godavari
+RFS007,Kadapa,Andhra Pradesh,13.214257,76.8511,CGWB,Krishna
+RFS008,Tirunelveli,Tamil Nadu,8.694373,80.079736,Tamil Nadu Agriculture Dept,Krishna
+RFS009,Coimbatore,Tamil Nadu,11.153744,77.193948,IMD Chennai,Krishna
+RFS010,Tiruchirappalli,Tamil Nadu,9.889042,79.606735,IMD Chennai,Vaigai
+RFS011,Salem,Tamil Nadu,11.513161,78.541663,Tamil Nadu Agriculture Dept,Cauvery
+RFS012,Vellore,Tamil Nadu,10.19031,79.461756,TNAU,Krishna
+RFS013,Chennai,Tamil Nadu,11.766605,78.87259,TNAU,Vaigai
+RFS014,Madurai,Tamil Nadu,12.895542,78.187614,TNAU,Krishna
+RFS015,Mysuru,Karnataka,14.121651,74.143286,UAS Bangalore,Krishna
+RFS016,Shivamogga,Karnataka,16.580795,74.371744,Karnataka Agriculture Dept,Godavari
+RFS017,Kalaburagi,Karnataka,13.333211,75.507052,UAS Bangalore,Cauvery
+RFS018,Tumakuru,Karnataka,17.687416,77.25401,Karnataka Agriculture Dept,Godavari
+RFS019,Hubli-Dharwad,Karnataka,16.95117,74.073387,UAS Bangalore,Krishna
+RFS020,Bengaluru Urban,Karnataka,17.321227,75.635819,Karnataka Agriculture Dept,Krishna
+RFS021,Belagavi,Karnataka,14.340032,76.254534,IMD Bangalore,Godavari
+RFS022,Dhule,Maharashtra,17.370065,76.458236,VNMKV,Godavari
+RFS023,Solapur,Maharashtra,19.037106,80.345397,IMD Mumbai,Narmada
+RFS024,Kolhapur,Maharashtra,17.960836,76.190368,IMD Mumbai,Godavari
+RFS025,Pune,Maharashtra,18.466212,72.66807,Maharashtra Agriculture Dept,Tapi
+RFS026,Nagpur,Maharashtra,21.705369,77.574147,IMD Mumbai,Krishna
+RFS027,Aurangabad,Maharashtra,19.5143,76.582562,VNMKV,Krishna
+RFS028,Mumbai,Maharashtra,16.038886,79.679836,VNMKV,Narmada
+RFS029,Varanasi,Uttar Pradesh,24.292343,82.206544,UP Agriculture Dept,Ganga
+RFS030,Gorakhpur,Uttar Pradesh,30.401833,78.96905,UP Agriculture Dept,Ganga
+RFS031,Agra,Uttar Pradesh,28.83046,79.511229,UP Agriculture Dept,Ganga
+RFS032,Bareilly,Uttar Pradesh,28.082157,84.272646,UP Agriculture Dept,Ganga
+RFS033,Kanpur,Uttar Pradesh,28.60871,82.09289,UP Agriculture Dept,Ganga
+RFS034,Lucknow,Uttar Pradesh,28.785564,83.185677,CGWB,Ganga
+RFS035,Allahabad,Uttar Pradesh,28.879022,79.904064,UP Agriculture Dept,Ganga
+RFS036,Jaipur,Rajasthan,29.578799,76.452063,Rajasthan Agriculture Dept,Sabarmati
+RFS037,Bikaner,Rajasthan,25.653115,74.314285,Rajasthan Agriculture Dept,Indus
+RFS038,Pali,Rajasthan,27.533247,76.72049,Rajasthan Agriculture Dept,Sabarmati
+RFS039,Jodhpur,Rajasthan,23.446802,70.724142,RAU,Indus
+RFS040,Ajmer,Rajasthan,25.516686,77.339695,RAU,Sabarmati
+RFS041,Udaipur,Rajasthan,25.187402,76.619982,IMD Jaipur,Mahi
+RFS042,Bharatpur,Rajasthan,26.755454,77.342552,RAU,Mahi
+RFS043,Ahmedabad,Gujarat,21.614783,68.681054,GAU,Sabarmati
+RFS044,Gandhi Nagar,Gujarat,21.05705,71.706205,IMD Ahmedabad,Sabarmati
+RFS045,Vadodara,Gujarat,24.370135,69.581055,Gujarat Agriculture Dept,Sabarmati
+RFS046,Surat,Gujarat,21.8714,74.098706,IMD Ahmedabad,Tapi
+RFS047,Junagadh,Gujarat,22.374116,72.927748,IMD Ahmedabad,Tapi
+RFS048,Rajkot,Gujarat,21.260774,69.501032,GAU,Sabarmati
+RFS049,Bhavnagar,Gujarat,20.393582,71.604476,IMD Ahmedabad,Tapi
+RFS050,Mohali,Punjab,31.85824,75.097065,PAU,Ravi
+RFS051,Amritsar,Punjab,31.830863,74.347611,PAU,Ravi
+RFS052,Patiala,Punjab,30.521565,76.517844,PAU,Indus
+RFS053,Jalandhar,Punjab,31.329253,73.51967,PAU,Sutlej
+RFS054,Bathinda,Punjab,32.411054,74.633202,PAU,Indus
+RFS055,Ludhiana,Punjab,31.573809,74.690131,Punjab Agriculture Dept,Ravi
+RFS056,Firozpur,Punjab,32.37305,76.324143,Punjab Agriculture Dept,Ravi
+RFS057,Faridabad,Haryana,28.236421,75.981855,IMD Chandigarh,Yamuna
+RFS058,Hisar,Haryana,28.800073,77.160091,Haryana Agriculture Dept,Ghaggar
+RFS059,Karnal,Haryana,29.201614,77.236881,IMD Chandigarh,Indus
+RFS060,Rohtak,Haryana,28.779775,74.728225,Haryana Agriculture Dept,Yamuna
+RFS061,Gurugram,Haryana,30.587923,76.159338,HAU,Ghaggar
+RFS062,Ambala,Haryana,27.686699,75.755931,HAU,Ghaggar
+RFS063,Panipat,Haryana,28.514948,76.036309,HAU,Ghaggar
+RFS064,Ratlam,Madhya Pradesh,22.431766,77.786095,MP Agriculture Dept,Son
+RFS065,Ujjain,Madhya Pradesh,22.465639,79.86898,JNKVV,Son
+RFS066,Indore,Madhya Pradesh,22.989352,74.414533,IMD Bhopal,Narmada
+RFS067,Gwalior,Madhya Pradesh,23.525908,78.219895,IMD Bhopal,Godavari
+RFS068,Bhopal,Madhya Pradesh,24.157124,77.997618,JNKVV,Chambal
+RFS069,Jabalpur,Madhya Pradesh,22.922462,77.143138,IMD Bhopal,Narmada
+RFS070,Sagar,Madhya Pradesh,23.734097,81.646451,JNKVV,Son
+RFS071,North 24 Parganas,West Bengal,25.522769,89.493752,IMD Kolkata,Brahmaputra
+RFS072,Howrah,West Bengal,25.660113,86.733066,IMD Kolkata,Brahmaputra
+RFS073,Darjeeling,West Bengal,23.125027,89.881264,West Bengal Agriculture Dept,Brahmaputra
+RFS074,Kolkata,West Bengal,21.747416,85.853178,WBUAFS,Ganga
+RFS075,South 24 Parganas,West Bengal,22.629973,86.904744,IMD Kolkata,Ganga
+RFS076,Nadia,West Bengal,23.225691,89.34926,West Bengal Agriculture Dept,Ganga
+RFS077,Patna,Bihar,25.20383,83.760794,Bihar Agriculture Dept,Gandak
+RFS078,Bhagalpur,Bihar,26.043876,84.696497,IMD Patna,Gandak
+RFS079,Gaya,Bihar,27.310849,83.638875,Bihar Agriculture Dept,Kosi
+RFS080,Darbhanga,Bihar,26.852859,85.542779,IMD Patna,Gandak
+RFS081,Purnia,Bihar,25.684509,86.570443,BAU,Kosi
+RFS082,Muzaffarpur,Bihar,24.792313,83.972803,IMD Patna,Ganga
+RFS083,Balasore,Odisha,22.467508,82.81577,IMD Bhubaneswar,Mahanadi
+RFS084,Cuttack,Odisha,19.737523,81.460349,Odisha Agriculture Dept,Baitarni
+RFS085,Rourkela,Odisha,19.345213,81.485689,IMD Bhubaneswar,Baitarni
+RFS086,Berhampur,Odisha,22.056438,86.587959,OUAT,Brahmani
+RFS087,Sambalpur,Odisha,22.250407,83.185945,Odisha Agriculture Dept,Baitarni
+RFS088,Bhubaneswar,Odisha,20.886542,83.313847,OUAT,Mahanadi
+RFS089,Kozhikode,Kerala,11.643852,76.8438,Kerala Agriculture Dept,West Coastal
+RFS090,Kochi,Kerala,10.105726,76.127439,Kerala Agriculture Dept,Cauvery
+RFS091,Kollam,Kerala,10.778233,75.814226,Kerala Agriculture Dept,West Coastal
+RFS092,Palakkad,Kerala,9.519215,76.036679,KAU,West Coastal
+RFS093,Thiruvananthapuram,Kerala,8.779502,75.996271,Kerala Agriculture Dept,West Coastal
+RFS094,Thrissur,Kerala,10.247144,75.717816,Kerala Agriculture Dept,West Coastal
+RFS095,Jorhat,Assam,25.701404,90.09286,AAU,Brahmaputra
+RFS096,Tezpur,Assam,26.530575,91.814158,IMD Guwahati,Brahmaputra
+RFS097,Dibrugarh,Assam,28.032826,90.914739,IMD Guwahati,Barak
+RFS098,Nagaon,Assam,24.676347,95.149195,IMD Guwahati,Brahmaputra
+RFS099,Silchar,Assam,25.457203,90.40891,IMD Guwahati,Barak
+RFS100,Guwahati,Assam,25.863842,91.04509,Assam Agriculture Dept,Brahmaputra

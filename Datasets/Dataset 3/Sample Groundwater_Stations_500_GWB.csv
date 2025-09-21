@@ -1,0 +1,501 @@
+Station_name,District_name,State_name,Latitude,Longitude,Agency_name,Basin
+Shri Kurnool Borewell,Kurnool,Andhra Pradesh,16.975988,76.700086,Andhra Pradesh GWB,Krishna
+Prakasam Agricultural Farm,Prakasam,Andhra Pradesh,13.155867,78.361287,Andhra Pradesh GWB,Krishna
+Visakhapatnam Town,Visakhapatnam,Andhra Pradesh,15.644463,78.725526,Andhra Pradesh GWB,Godavari
+Anantapur Indiranagar Borewell,Anantapur,Andhra Pradesh,13.215472,79.539418,Andhra Pradesh GWB,Krishna
+Malleswaram,West Godavari,Andhra Pradesh,19.31181,79.528275,Andhra Pradesh GWB,Pennar
+Kurnool East,Kurnool,Andhra Pradesh,12.986886,81.790107,Andhra Pradesh GWB,Godavari
+Kurnool Medical Complex,Kurnool,Andhra Pradesh,13.638579,79.342166,Andhra Pradesh GWB,Krishna
+Jayanagar,East Godavari,Andhra Pradesh,16.238979,78.458487,Andhra Pradesh GWB,Pennar
+Visakhapatnam Municipal Area,Visakhapatnam,Andhra Pradesh,14.769979,82.646509,Andhra Pradesh GWB,Krishna
+Anantapur Block,Anantapur,Andhra Pradesh,18.891953,81.03744,Andhra Pradesh GWB,Krishna
+West Godavari Railway Colony,West Godavari,Andhra Pradesh,14.354161,78.47302,Andhra Pradesh GWB,Pennar
+Krishna Cantonment Borewell,Krishna,Andhra Pradesh,15.295804,78.254566,Andhra Pradesh GWB,Krishna
+Kadapa Industrial Estate,Kadapa,Andhra Pradesh,13.569889,77.779856,Andhra Pradesh GWB,Godavari
+Visakhapatnam Medical Complex,Visakhapatnam,Andhra Pradesh,16.2038,84.268627,CGWB,Godavari
+Kurnool Anna Nagar,Kurnool,Andhra Pradesh,17.880191,79.221404,CGWB,Godavari
+West Godavari Colony,West Godavari,Andhra Pradesh,19.303217,82.595698,Andhra Pradesh GWB,Krishna
+West Godavari Industrial Estate,West Godavari,Andhra Pradesh,13.569875,82.600086,Andhra Pradesh GWB,Krishna
+Old Kurnool Borewell,Kurnool,Andhra Pradesh,19.00369,83.529775,Andhra Pradesh GWB,Krishna
+Krishna Station,Krishna,Andhra Pradesh,19.345891,80.761649,Andhra Pradesh GWB,Pennar
+West Godavari Medical Complex,West Godavari,Andhra Pradesh,15.461966,78.194386,Andhra Pradesh GWB,Pennar
+West Godavari T. Nagar Borewell,West Godavari,Andhra Pradesh,17.049146,80.004801,Andhra Pradesh GWB,Pennar
+Guntur Medical Complex Borewell,Guntur,Andhra Pradesh,14.110803,78.261739,Andhra Pradesh GWB,Krishna
+Chittoor Malleswaram,Chittoor,Andhra Pradesh,18.517448,77.066859,CGWB,Pennar
+East Godavari Anna Nagar,East Godavari,Andhra Pradesh,16.533482,78.443978,Andhra Pradesh GWB,Godavari
+Guntur Town,Guntur,Andhra Pradesh,15.769173,82.332607,Andhra Pradesh GWB,Krishna
+Old Kadapa,Kadapa,Andhra Pradesh,13.831462,80.088908,CGWB,Pennar
+West Godavari Water Works,West Godavari,Andhra Pradesh,13.185361,81.717159,Andhra Pradesh GWB,Godavari
+Visakhapatnam Block,Visakhapatnam,Andhra Pradesh,15.869509,83.417203,CGWB,Godavari
+Sant West Godavari,West Godavari,Andhra Pradesh,14.496745,82.072732,Andhra Pradesh GWB,Godavari
+West Godavari Housing Board Borewell,West Godavari,Andhra Pradesh,12.900157,81.173421,Andhra Pradesh GWB,Krishna
+T. Nagar,Chittoor,Andhra Pradesh,12.979649,77.043687,Andhra Pradesh GWB,Krishna
+Prakasam University Campus,Prakasam,Andhra Pradesh,16.835671,79.853799,Andhra Pradesh GWB,Pennar
+Kadapa Colony,Kadapa,Andhra Pradesh,17.513343,78.409488,CGWB,Krishna
+Shri Prakasam,Prakasam,Andhra Pradesh,12.565208,81.469274,CGWB,Krishna
+Indiranagar,Madurai,Tamil Nadu,12.835986,77.662872,CGWB,Vaigai
+Thanjavur Malleswaram,Thanjavur,Tamil Nadu,10.909174,79.005384,Tamil Nadu GWB,Cauvery
+Tirunelveli Housing Board,Tirunelveli,Tamil Nadu,12.083292,76.699516,Tamil Nadu GWB,Vaigai
+Greater Tirunelveli Borewell,Tirunelveli,Tamil Nadu,12.69102,78.274341,Tamil Nadu GWB,Cauvery
+Shri Namakkal Borewell,Namakkal,Tamil Nadu,11.504124,77.178799,Tamil Nadu GWB,Vaigai
+Tirunelveli Village,Tirunelveli,Tamil Nadu,8.814516,76.573505,CGWB,Krishna
+Tiruchirappalli Municipal Area,Tiruchirappalli,Tamil Nadu,13.356104,79.372649,Tamil Nadu GWB,Cauvery
+Erode Agricultural Station,Erode,Tamil Nadu,12.051105,77.494835,Tamil Nadu GWB,Cauvery
+Chennai Anna Nagar,Chennai,Tamil Nadu,12.33056,76.48643,Tamil Nadu GWB,Cauvery
+Erode Railway Colony,Erode,Tamil Nadu,9.22608,78.970149,Tamil Nadu GWB,Krishna
+Mini Tirunelveli,Tirunelveli,Tamil Nadu,8.982123,80.331404,Tamil Nadu GWB,Vaigai
+New Dindigul,Dindigul,Tamil Nadu,13.413297,76.520406,CGWB,Vaigai
+Karur South,Karur,Tamil Nadu,11.956865,79.338775,CGWB,Vaigai
+Namakkal Indiranagar,Namakkal,Tamil Nadu,9.726536,79.816069,Tamil Nadu GWB,Krishna
+Karur Railway Colony,Karur,Tamil Nadu,11.049269,76.86328,CGWB,Krishna
+Dindigul Medical Complex,Dindigul,Tamil Nadu,9.578025,77.934497,Tamil Nadu GWB,Vaigai
+Namakkal Colony,Namakkal,Tamil Nadu,9.175358,78.129338,Tamil Nadu GWB,Krishna
+Tiruchirappalli Railway Colony,Tiruchirappalli,Tamil Nadu,8.51363,80.283998,Tamil Nadu GWB,Cauvery
+Dindigul Industrial Area,Dindigul,Tamil Nadu,8.254175,80.427712,CGWB,Krishna
+Karur Industrial Estate,Karur,Tamil Nadu,10.719074,77.09793,CGWB,Cauvery
+Namakkal Cantonment Borewell,Namakkal,Tamil Nadu,12.281312,76.984785,Tamil Nadu GWB,Cauvery
+Karur University Campus,Karur,Tamil Nadu,10.51054,79.606375,CGWB,Krishna
+Thanjavur Indiranagar,Thanjavur,Tamil Nadu,11.369588,79.236733,CGWB,Krishna
+Karur Indiranagar,Karur,Tamil Nadu,9.425554,77.112579,Tamil Nadu GWB,Vaigai
+Salem Industrial Estate,Salem,Tamil Nadu,9.571505,77.222718,Tamil Nadu GWB,Vaigai
+Erode Block,Erode,Tamil Nadu,8.840429,76.962788,Tamil Nadu GWB,Vaigai
+Dindigul Koramangala,Dindigul,Tamil Nadu,8.107426,79.962955,CGWB,Krishna
+Dindigul Nagar,Dindigul,Tamil Nadu,10.960213,79.305853,Tamil Nadu GWB,Krishna
+Namakkal West,Namakkal,Tamil Nadu,11.678805,79.59164,Tamil Nadu GWB,Krishna
+Coimbatore Cantonment,Coimbatore,Tamil Nadu,11.25541,78.983499,Tamil Nadu GWB,Cauvery
+Vellore University Campus Borewell,Vellore,Tamil Nadu,9.43086,77.473087,CGWB,Cauvery
+Karur Junction,Karur,Tamil Nadu,11.575793,79.515549,Tamil Nadu GWB,Cauvery
+Coimbatore Housing Board,Coimbatore,Tamil Nadu,9.311997,78.131025,Tamil Nadu GWB,Krishna
+Namakkal Industrial Estate,Namakkal,Tamil Nadu,8.92284,78.732614,Tamil Nadu GWB,Krishna
+Kalaburagi Medical Complex,Kalaburagi,Karnataka,12.256691,74.115553,Karnataka GWB,Godavari
+Belagavi Colony,Belagavi,Karnataka,12.888308,76.66444,Karnataka GWB,Krishna
+Bengaluru Urban Indiranagar,Bengaluru Urban,Karnataka,17.073591,76.546696,Karnataka GWB,Cauvery
+Ballari Village,Ballari,Karnataka,11.588565,75.890264,CGWB,Godavari
+Vijayapura Railway Colony,Vijayapura,Karnataka,12.570938,74.792616,CGWB,Cauvery
+Lower Bagalkot,Bagalkot,Karnataka,14.754116,77.715806,Karnataka GWB,Godavari
+Tumakuru Village,Tumakuru,Karnataka,14.152925,74.12915,Karnataka GWB,Godavari
+Bengaluru Urban Housing Board Borewell,Bengaluru Urban,Karnataka,16.408286,75.243209,CGWB,Cauvery
+Ballari Medical Complex,Ballari,Karnataka,15.386233,75.081458,CGWB,Krishna
+Belagavi Railway Colony,Belagavi,Karnataka,13.559649,75.819805,CGWB,Cauvery
+Kalaburagi Anna Nagar,Kalaburagi,Karnataka,13.962674,76.041854,Karnataka GWB,Godavari
+Belagavi Nagar,Belagavi,Karnataka,18.156143,77.105736,CGWB,Godavari
+Belagavi Anna Nagar,Belagavi,Karnataka,15.677535,78.412298,CGWB,Krishna
+Vijayapura Koramangala,Vijayapura,Karnataka,13.420179,78.384327,Karnataka GWB,Cauvery
+Ballari Medical College Borewell,Ballari,Karnataka,12.29861,74.294045,Karnataka GWB,Godavari
+Belagavi Tehsil,Belagavi,Karnataka,18.143879,74.383314,CGWB,Krishna
+Ballari Industrial Estate,Ballari,Karnataka,16.929855,75.711701,CGWB,Krishna
+Old Mysuru,Mysuru,Karnataka,15.878605,75.190908,Karnataka GWB,Godavari
+Belagavi Malleswaram,Belagavi,Karnataka,15.656678,75.310667,Karnataka GWB,Krishna
+Bagalkot Agricultural Station,Bagalkot,Karnataka,17.967377,77.545226,Karnataka GWB,Godavari
+Greater Kalaburagi,Kalaburagi,Karnataka,13.073666,74.670452,CGWB,Cauvery
+Kalaburagi Cantonment,Kalaburagi,Karnataka,14.574074,76.109141,Karnataka GWB,Cauvery
+Shivamogga Railway Colony,Shivamogga,Karnataka,14.564312,76.691165,Karnataka GWB,Krishna
+Bagalkot Industrial Estate,Bagalkot,Karnataka,18.233378,77.761814,Karnataka GWB,Cauvery
+Hubli-Dharwad Tehsil,Hubli-Dharwad,Karnataka,15.533729,77.433991,Karnataka GWB,Krishna
+Tumakuru Industrial Estate,Tumakuru,Karnataka,14.790073,75.837566,Karnataka GWB,Godavari
+Shivamogga Industrial Estate,Shivamogga,Karnataka,14.968283,76.981626,Karnataka GWB,Cauvery
+Vijayapura Station,Vijayapura,Karnataka,12.311451,77.476466,Karnataka GWB,Godavari
+Upper Ballari,Ballari,Karnataka,14.032456,77.403994,Karnataka GWB,Godavari
+Bagalkot Colony,Bagalkot,Karnataka,14.892983,74.129912,Karnataka GWB,Krishna
+Mysuru Railway Colony,Mysuru,Karnataka,13.072905,77.786326,Karnataka GWB,Cauvery
+Vijayapura Complex,Vijayapura,Karnataka,18.361712,75.096789,CGWB,Krishna
+Shivamogga Indiranagar Borewell,Shivamogga,Karnataka,13.433732,77.555028,CGWB,Godavari
+Hubli-Dharwad Indiranagar,Hubli-Dharwad,Karnataka,15.559464,76.969733,CGWB,Cauvery
+Nashik Housing Board,Nashik,Maharashtra,18.45974,75.074219,Maharashtra GWB,Narmada
+Powai,Latur,Maharashtra,15.783707,78.457641,Maharashtra GWB,Godavari
+Satara Railway Colony,Satara,Maharashtra,18.719636,72.796157,CGWB,Narmada
+Mumbai Housing Board,Mumbai,Maharashtra,16.148126,79.783533,Maharashtra GWB,Godavari
+Bandra,Solapur,Maharashtra,15.986384,78.752202,CGWB,Narmada
+Kolhapur Industrial Estate,Kolhapur,Maharashtra,21.701907,77.514393,Maharashtra GWB,Tapi
+Dhule Agricultural Farm,Dhule,Maharashtra,21.983268,78.474131,Maharashtra GWB,Tapi
+Mumbai Vashi,Mumbai,Maharashtra,21.372256,72.867928,Maharashtra GWB,Godavari
+Dhule Medical Complex,Dhule,Maharashtra,16.604894,73.131747,CGWB,Godavari
+Kolhapur Churchgate,Kolhapur,Maharashtra,17.009225,77.603237,CGWB,Godavari
+Churchgate,Sangli,Maharashtra,15.980102,80.061885,Maharashtra GWB,Tapi
+Mini Kolhapur,Kolhapur,Maharashtra,16.79491,75.577546,CGWB,Tapi
+Borivali,Dhule,Maharashtra,15.642607,79.1403,CGWB,Krishna
+Solapur Village,Solapur,Maharashtra,21.41901,78.461377,Maharashtra GWB,Tapi
+Ahmednagar Agricultural Station,Ahmednagar,Maharashtra,19.905469,78.267427,Maharashtra GWB,Krishna
+Sangli Churchgate,Sangli,Maharashtra,17.508064,76.026586,Maharashtra GWB,Narmada
+Greater Satara,Satara,Maharashtra,16.64166,73.557278,Maharashtra GWB,Krishna
+Nashik Medical Complex,Nashik,Maharashtra,18.544154,73.102395,Maharashtra GWB,Tapi
+Solapur Industrial Estate,Solapur,Maharashtra,16.086969,75.656596,Maharashtra GWB,Tapi
+Aurangabad Park Borewell,Aurangabad,Maharashtra,19.299641,79.079338,CGWB,Tapi
+Pune Agricultural Station,Pune,Maharashtra,21.449163,74.270938,CGWB,Narmada
+Mumbai Powai,Mumbai,Maharashtra,16.258394,72.862774,Maharashtra GWB,Narmada
+Latur University Campus,Latur,Maharashtra,18.448684,77.86389,CGWB,Godavari
+Kolhapur Cantonment,Kolhapur,Maharashtra,21.25519,77.739375,Maharashtra GWB,Tapi
+Nashik Railway Colony Borewell,Nashik,Maharashtra,16.912253,76.057567,Maharashtra GWB,Krishna
+Pune Housing Board,Pune,Maharashtra,21.66857,79.093529,Maharashtra GWB,Krishna
+Nagpur Housing Board Borewell,Nagpur,Maharashtra,15.82876,75.168073,CGWB,Godavari
+Andheri,Nashik,Maharashtra,19.31149,79.004424,Maharashtra GWB,Godavari
+Nagpur Central,Nagpur,Maharashtra,21.918927,76.821724,Maharashtra GWB,Godavari
+Shri Solapur,Solapur,Maharashtra,19.327544,72.626249,Maharashtra GWB,Narmada
+Pune Bandra,Pune,Maharashtra,20.557111,76.605904,CGWB,Tapi
+Mumbai Cantonment Borewell,Mumbai,Maharashtra,18.477276,80.212209,Maharashtra GWB,Godavari
+Ahmednagar University Campus,Ahmednagar,Maharashtra,15.926935,74.700128,Maharashtra GWB,Tapi
+Pune Industrial Estate,Pune,Maharashtra,18.44915,77.343414,Maharashtra GWB,Godavari
+Bareilly Shastri Nagar,Bareilly,Uttar Pradesh,26.681469,83.660683,Uttar Pradesh GWB,Yamuna
+Agra Cantonment Borewell,Agra,Uttar Pradesh,28.256223,79.807258,CGWB,Ganga
+Meerut Campus,Meerut,Uttar Pradesh,26.693573,82.584417,Uttar Pradesh GWB,Ganga
+Bareilly Industrial Estate,Bareilly,Uttar Pradesh,26.552418,83.552055,Uttar Pradesh GWB,Yamuna
+Agra Cantonment,Agra,Uttar Pradesh,24.494124,80.805594,Uttar Pradesh GWB,Yamuna
+Model Town,Varanasi,Uttar Pradesh,24.569732,79.089262,Uttar Pradesh GWB,Ganga
+Mathura Patel Nagar,Mathura,Uttar Pradesh,27.880266,81.933734,Uttar Pradesh GWB,Yamuna
+Agra Medical Complex,Agra,Uttar Pradesh,26.151857,78.360542,Uttar Pradesh GWB,Ganga
+Bareilly Railway Colony,Bareilly,Uttar Pradesh,24.414776,80.97862,Uttar Pradesh GWB,Ganga
+Aligarh Nagar,Aligarh,Uttar Pradesh,29.718393,78.166849,Uttar Pradesh GWB,Yamuna
+Moradabad East,Moradabad,Uttar Pradesh,26.575031,78.616767,Uttar Pradesh GWB,Yamuna
+Varanasi Model Town,Varanasi,Uttar Pradesh,27.330459,79.313145,CGWB,Ganga
+Kanpur Tehsil,Kanpur,Uttar Pradesh,28.919878,79.170853,Uttar Pradesh GWB,Ganga
+Meerut Research Station Borewell,Meerut,Uttar Pradesh,27.151758,83.250157,Uttar Pradesh GWB,Ganga
+Civil Lines,Aligarh,Uttar Pradesh,29.576137,81.318194,Uttar Pradesh GWB,Yamuna
+Gorakhpur Railway Colony Borewell,Gorakhpur,Uttar Pradesh,24.95155,84.107107,CGWB,Ganga
+Nehru Colony,Kanpur,Uttar Pradesh,26.719033,80.003374,CGWB,Ganga
+Moradabad Village,Moradabad,Uttar Pradesh,27.220238,77.8552,CGWB,Ganga
+Varanasi Water Works,Varanasi,Uttar Pradesh,25.383001,78.098332,Uttar Pradesh GWB,Yamuna
+Aligarh University Campus,Aligarh,Uttar Pradesh,26.908486,81.228016,CGWB,Yamuna
+Gorakhpur Railway Colony,Gorakhpur,Uttar Pradesh,24.811415,77.512147,Uttar Pradesh GWB,Yamuna
+Old Gorakhpur,Gorakhpur,Uttar Pradesh,27.199157,79.328059,CGWB,Ganga
+Gorakhpur University Campus,Gorakhpur,Uttar Pradesh,27.920556,80.803009,CGWB,Ganga
+Ghaziabad Park,Ghaziabad,Uttar Pradesh,26.813216,83.073619,CGWB,Yamuna
+Meerut Industrial Estate,Meerut,Uttar Pradesh,24.493463,83.743451,Uttar Pradesh GWB,Ganga
+Moradabad University Campus,Moradabad,Uttar Pradesh,28.541065,84.432395,Uttar Pradesh GWB,Yamuna
+Ghaziabad Industrial Estate,Ghaziabad,Uttar Pradesh,26.395691,82.808486,Uttar Pradesh GWB,Ganga
+Bareilly Agricultural Station,Bareilly,Uttar Pradesh,26.008928,81.184724,Uttar Pradesh GWB,Ganga
+Ghaziabad Medical Complex,Ghaziabad,Uttar Pradesh,29.942201,79.326738,Uttar Pradesh GWB,Ganga
+Meerut Research Station,Meerut,Uttar Pradesh,25.874199,79.825095,CGWB,Ganga
+Meerut Rural,Meerut,Uttar Pradesh,28.128366,80.175548,Uttar Pradesh GWB,Yamuna
+Shri Agra,Agra,Uttar Pradesh,25.086435,84.499825,CGWB,Ganga
+Aligarh West,Aligarh,Uttar Pradesh,28.234926,83.572946,CGWB,Ganga
+Meerut Medical Complex,Meerut,Uttar Pradesh,28.631926,77.327693,Uttar Pradesh GWB,Yamuna
+Bikaner Housing Board,Bikaner,Rajasthan,28.417216,76.554203,CGWB,Sabarmati
+Jhunjhunu Cantonment,Jhunjhunu,Rajasthan,29.508615,71.246146,Rajasthan GWB,Sabarmati
+Udaipur West,Udaipur,Rajasthan,26.620928,73.267947,Rajasthan GWB,Sabarmati
+Jodhpur Agricultural Station,Jodhpur,Rajasthan,29.293642,74.490867,Rajasthan GWB,Indus
+Kota South,Kota,Rajasthan,28.494441,71.955122,Rajasthan GWB,Sabarmati
+Pali Village,Pali,Rajasthan,29.369334,77.874247,CGWB,Luni
+Jodhpur Medical Complex,Jodhpur,Rajasthan,24.616679,72.368164,Rajasthan GWB,Indus
+Churu Park,Churu,Rajasthan,25.065532,76.967854,Rajasthan GWB,Indus
+Udaipur Medical Complex,Udaipur,Rajasthan,23.136828,71.440893,Rajasthan GWB,Luni
+Bikaner Park,Bikaner,Rajasthan,24.71101,70.596635,Rajasthan GWB,Mahi
+Jaipur Railway Colony,Jaipur,Rajasthan,28.173519,72.121448,Rajasthan GWB,Indus
+Kota University Campus,Kota,Rajasthan,26.769089,72.745434,Rajasthan GWB,Indus
+Jhunjhunu Nehru Colony Borewell,Jhunjhunu,Rajasthan,25.811267,73.731216,CGWB,Luni
+Mini Jodhpur,Jodhpur,Rajasthan,24.736107,75.41394,Rajasthan GWB,Sabarmati
+New Udaipur,Udaipur,Rajasthan,30.061898,73.806781,Rajasthan GWB,Mahi
+Ajmer Cantonment,Ajmer,Rajasthan,29.377691,72.340362,Rajasthan GWB,Luni
+Patel Nagar,Ajmer,Rajasthan,23.26367,75.322104,Rajasthan GWB,Luni
+Sikar South,Sikar,Rajasthan,26.14605,73.100196,CGWB,Mahi
+Jodhpur Civil Lines,Jodhpur,Rajasthan,26.927416,72.390903,CGWB,Mahi
+Jaipur Agricultural Station,Jaipur,Rajasthan,27.966307,72.663923,Rajasthan GWB,Sabarmati
+Jaipur Block,Jaipur,Rajasthan,24.976799,78.320246,CGWB,Mahi
+Alwar Agricultural Station,Alwar,Rajasthan,29.860084,70.785015,Rajasthan GWB,Mahi
+Pali Industrial Estate,Pali,Rajasthan,28.605311,72.796956,Rajasthan GWB,Luni
+Alwar Block,Alwar,Rajasthan,25.678496,76.36776,Rajasthan GWB,Indus
+Kota Model Town,Kota,Rajasthan,23.186576,71.174432,CGWB,Mahi
+Sri Sikar,Sikar,Rajasthan,30.173829,72.070192,CGWB,Indus
+Bharatpur Railway Colony,Bharatpur,Rajasthan,28.835695,78.208051,Rajasthan GWB,Luni
+Churu Medical Complex,Churu,Rajasthan,29.417588,77.162258,CGWB,Mahi
+Udaipur Central,Udaipur,Rajasthan,23.87381,71.308823,Rajasthan GWB,Sabarmati
+Sri Alwar,Alwar,Rajasthan,28.786364,74.464822,CGWB,Indus
+Shastri Nagar,Jodhpur,Rajasthan,23.902353,72.353249,CGWB,Mahi
+Kota Market,Kota,Rajasthan,28.528028,70.661297,Rajasthan GWB,Luni
+Kota Patel Nagar,Kota,Rajasthan,29.730112,71.529233,Rajasthan GWB,Mahi
+Surat Medical Complex,Surat,Gujarat,22.937605,71.993784,CGWB,Tapi
+Mehsana Bandra,Mehsana,Gujarat,20.804643,72.059115,Gujarat GWB,Sabarmati
+Gandhi Nagar Medical Complex Borewell,Gandhi Nagar,Gujarat,23.060311,72.985234,CGWB,Sabarmati
+Rajkot Cantonment,Rajkot,Gujarat,23.016964,69.963612,Gujarat GWB,Narmada
+Anand West,Anand,Gujarat,20.742978,70.701541,CGWB,Sabarmati
+Junagadh University Campus,Junagadh,Gujarat,24.584258,68.84998,Gujarat GWB,Narmada
+Sant Surat,Surat,Gujarat,21.257117,69.611473,CGWB,Tapi
+Junagadh Park,Junagadh,Gujarat,23.823346,74.069385,Gujarat GWB,Sabarmati
+Gandhi Nagar Cantonment,Gandhi Nagar,Gujarat,22.33764,68.585319,Gujarat GWB,Sabarmati
+Mehsana Medical Complex,Mehsana,Gujarat,20.228693,69.828816,Gujarat GWB,Narmada
+Junagadh Vashi Borewell,Junagadh,Gujarat,22.025361,73.735962,Gujarat GWB,Sabarmati
+Kheda Bandra,Kheda,Gujarat,22.600148,68.477956,Gujarat GWB,Narmada
+Junagadh Block,Junagadh,Gujarat,20.604718,68.62843,Gujarat GWB,Tapi
+Kheda Medical Complex,Kheda,Gujarat,23.353882,73.225778,Gujarat GWB,Mahi
+Vashi,Ahmedabad,Gujarat,23.331077,69.948639,Gujarat GWB,Narmada
+Mehsana Housing Board,Mehsana,Gujarat,22.805475,69.725948,Gujarat GWB,Tapi
+Gandhi Nagar Junction Borewell,Gandhi Nagar,Gujarat,22.463892,72.687688,CGWB,Narmada
+Gandhi Nagar Urban,Gandhi Nagar,Gujarat,20.896686,70.866751,CGWB,Mahi
+Ahmedabad Housing Board,Ahmedabad,Gujarat,24.102243,72.782942,Gujarat GWB,Mahi
+Vadodara Bandra,Vadodara,Gujarat,22.469743,70.039392,CGWB,Sabarmati
+Rajkot Bandra,Rajkot,Gujarat,22.86736,69.249717,CGWB,Sabarmati
+Anand Powai,Anand,Gujarat,23.313034,72.486559,CGWB,Sabarmati
+Old Kheda,Kheda,Gujarat,21.35261,71.727599,Gujarat GWB,Sabarmati
+Lower Kheda,Kheda,Gujarat,23.512491,69.390914,Gujarat GWB,Mahi
+Vadodara Rural,Vadodara,Gujarat,21.55238,71.070625,CGWB,Mahi
+Bhavnagar Junction,Bhavnagar,Gujarat,22.244008,69.296464,CGWB,Narmada
+Vadodara Block,Vadodara,Gujarat,24.29218,69.137921,Gujarat GWB,Sabarmati
+Mehsana Industrial Estate,Mehsana,Gujarat,24.120693,68.060237,Gujarat GWB,Mahi
+Anand Circle,Anand,Gujarat,24.648768,71.531453,CGWB,Sabarmati
+Bhavnagar Housing Board Borewell,Bhavnagar,Gujarat,20.763723,70.982944,Gujarat GWB,Sabarmati
+Vadodara Agricultural Station,Vadodara,Gujarat,22.668572,72.922338,Gujarat GWB,Mahi
+Surat Park,Surat,Gujarat,22.421819,68.563796,Gujarat GWB,Sabarmati
+Bhavnagar Churchgate,Bhavnagar,Gujarat,21.8028,70.903781,Gujarat GWB,Mahi
+Gurdaspur Agricultural Station,Gurdaspur,Punjab,30.420419,74.837875,Punjab GWB,Ravi
+Jalandhar Gandhi Nagar,Jalandhar,Punjab,30.602632,74.228802,Punjab GWB,Sutlej
+Gurdaspur Complex,Gurdaspur,Punjab,31.147704,75.053733,Punjab GWB,Ravi
+Shri Sangrur,Sangrur,Punjab,31.084519,74.69389,Punjab GWB,Indus
+Amritsar Housing Board,Amritsar,Punjab,30.484353,75.217127,Punjab GWB,Sutlej
+Jalandhar Cantonment,Jalandhar,Punjab,30.836448,73.683598,Punjab GWB,Ravi
+Ludhiana Industrial Estate Borewell,Ludhiana,Punjab,31.518303,74.51696,Punjab GWB,Indus
+Amritsar Patel Nagar,Amritsar,Punjab,31.123491,73.698844,Punjab GWB,Sutlej
+Firozpur Shastri Nagar,Firozpur,Punjab,32.435,75.631407,Punjab GWB,Indus
+Gurdaspur Village,Gurdaspur,Punjab,31.548191,75.683915,CGWB,Ravi
+Bathinda Colony,Bathinda,Punjab,31.086528,75.901932,CGWB,Ravi
+Bathinda Nehru Colony,Bathinda,Punjab,31.095801,76.217089,CGWB,Indus
+Old Sangrur,Sangrur,Punjab,29.596652,75.678652,Punjab GWB,Sutlej
+Ludhiana Shastri Nagar,Ludhiana,Punjab,31.609859,73.660632,CGWB,Indus
+Bathinda University Campus,Bathinda,Punjab,29.920407,76.778495,Punjab GWB,Sutlej
+Jalandhar University Campus,Jalandhar,Punjab,31.955147,74.281783,Punjab GWB,Indus
+Jalandhar Medical Complex,Jalandhar,Punjab,31.170154,75.452502,Punjab GWB,Ravi
+Gurdaspur Civil Lines,Gurdaspur,Punjab,32.324759,75.71543,Punjab GWB,Sutlej
+Patiala Housing Board,Patiala,Punjab,30.920556,76.302825,CGWB,Sutlej
+Gurdaspur Nagar,Gurdaspur,Punjab,30.738032,74.874476,Punjab GWB,Ravi
+Sant Bathinda Borewell,Bathinda,Punjab,32.0414,73.805131,Punjab GWB,Sutlej
+Hoshiarpur Town,Hoshiarpur,Punjab,31.672916,75.344207,CGWB,Indus
+Amritsar Agricultural Station,Amritsar,Punjab,32.311479,76.674856,Punjab GWB,Sutlej
+Bathinda Railway Colony,Bathinda,Punjab,31.611306,74.808886,Punjab GWB,Sutlej
+Mohali Cantonment,Mohali,Punjab,31.446164,74.517794,CGWB,Sutlej
+Bathinda Central,Bathinda,Punjab,30.908471,76.271113,CGWB,Sutlej
+Bathinda Gandhi Nagar,Bathinda,Punjab,31.660036,74.474135,Punjab GWB,Sutlej
+Hoshiarpur Medical Complex,Hoshiarpur,Punjab,32.330394,74.613962,Punjab GWB,Sutlej
+Gandhi Nagar,Gurdaspur,Punjab,31.884927,74.058577,Punjab GWB,Indus
+Amritsar Industrial Estate,Amritsar,Punjab,31.071833,76.268926,Punjab GWB,Sutlej
+Ludhiana Village Borewell,Ludhiana,Punjab,30.1943,75.83366,Punjab GWB,Sutlej
+Ludhiana Tehsil Borewell,Ludhiana,Punjab,32.238254,75.675638,Punjab GWB,Ravi
+Gurdaspur Medical Complex,Gurdaspur,Punjab,31.107214,74.446072,CGWB,Indus
+Greater Hisar,Hisar,Haryana,27.863856,74.817836,Haryana GWB,Ghaggar
+Sonipat Housing Board,Sonipat,Haryana,27.768665,77.665683,Haryana GWB,Indus
+Gurugram Block,Gurugram,Haryana,30.315411,74.766036,Haryana GWB,Yamuna
+Rohtak Agricultural Station,Rohtak,Haryana,29.889674,74.772864,CGWB,Yamuna
+Panipat Agricultural Farm,Panipat,Haryana,30.54229,77.533202,Haryana GWB,Yamuna
+Ambala University Campus,Ambala,Haryana,30.642142,76.758615,Haryana GWB,Ghaggar
+Hisar Agricultural Station,Hisar,Haryana,27.553238,75.183622,Haryana GWB,Yamuna
+Rohtak University Campus,Rohtak,Haryana,29.417458,76.370097,CGWB,Yamuna
+Faridabad Medical Complex,Faridabad,Haryana,30.187693,76.774725,Haryana GWB,Ghaggar
+Sirsa University Campus,Sirsa,Haryana,28.28929,74.75086,CGWB,Yamuna
+Sonipat Gandhi Nagar,Sonipat,Haryana,29.656018,77.085709,Haryana GWB,Indus
+Gandhi Nagar Borewell,Sirsa,Haryana,29.491975,75.75424,Haryana GWB,Indus
+Rohtak Nehru Colony Borewell,Rohtak,Haryana,30.165227,75.009114,Haryana GWB,Ghaggar
+Faridabad Station,Faridabad,Haryana,30.088578,74.837364,Haryana GWB,Yamuna
+Sirsa Agricultural Station,Sirsa,Haryana,27.804704,76.328925,Haryana GWB,Ghaggar
+Kurukshetra Rural,Kurukshetra,Haryana,28.906954,77.071258,Haryana GWB,Ghaggar
+Faridabad Tehsil,Faridabad,Haryana,28.523846,76.127309,CGWB,Ghaggar
+Sonipat University Campus,Sonipat,Haryana,28.355779,75.313747,Haryana GWB,Ghaggar
+Sirsa Nehru Colony,Sirsa,Haryana,27.523009,75.805784,CGWB,Indus
+Karnal Medical Complex,Karnal,Haryana,30.812366,74.949211,Haryana GWB,Ghaggar
+Sonipat Agricultural Station,Sonipat,Haryana,30.793666,75.461779,Haryana GWB,Ghaggar
+Panipat University Campus,Panipat,Haryana,28.741053,77.575822,CGWB,Yamuna
+Nehru Colony Borewell,Panipat,Haryana,30.740216,76.023353,CGWB,Ghaggar
+Maha Ambala,Ambala,Haryana,29.788124,74.959291,Haryana GWB,Indus
+Kurukshetra Cantonment,Kurukshetra,Haryana,29.129398,75.822657,CGWB,Ghaggar
+Sirsa Industrial Estate,Sirsa,Haryana,29.885557,77.18058,Haryana GWB,Indus
+Gurugram Medical Complex,Gurugram,Haryana,28.70703,76.635099,Haryana GWB,Ghaggar
+Shri Gurugram,Gurugram,Haryana,30.783437,75.920503,Haryana GWB,Yamuna
+Sirsa Colony,Sirsa,Haryana,29.015647,75.790743,CGWB,Yamuna
+Karnal Nehru Colony,Karnal,Haryana,30.32648,76.909497,Haryana GWB,Ghaggar
+Sonipat Patel Nagar,Sonipat,Haryana,27.831918,76.88258,Haryana GWB,Ghaggar
+Hisar Housing Board,Hisar,Haryana,29.703098,76.73456,Haryana GWB,Ghaggar
+Panipat Civil Lines,Panipat,Haryana,29.403486,77.662927,Haryana GWB,Yamuna
+Dewas Cantonment,Dewas,Madhya Pradesh,25.350591,81.506328,CGWB,Chambal
+Indore Industrial Estate,Indore,Madhya Pradesh,22.642235,79.981958,Madhya Pradesh GWB,Son
+Ujjain Agricultural Station,Ujjain,Madhya Pradesh,22.923311,77.889179,CGWB,Son
+Satna Circle,Satna,Madhya Pradesh,24.522128,79.196122,CGWB,Son
+Gwalior Salt Lake,Gwalior,Madhya Pradesh,26.420227,79.016431,Madhya Pradesh GWB,Chambal
+Gwalior Cantonment,Gwalior,Madhya Pradesh,24.013867,77.555032,Madhya Pradesh GWB,Chambal
+Gwalior Circle,Gwalior,Madhya Pradesh,24.273984,78.161957,CGWB,Narmada
+Ratlam University Campus,Ratlam,Madhya Pradesh,23.859193,75.658592,Madhya Pradesh GWB,Godavari
+Lower Dewas,Dewas,Madhya Pradesh,23.45222,81.13908,Madhya Pradesh GWB,Son
+Dewas University Campus,Dewas,Madhya Pradesh,21.992433,77.887232,Madhya Pradesh GWB,Son
+Dewas Housing Board,Dewas,Madhya Pradesh,24.198056,80.432683,Madhya Pradesh GWB,Chambal
+Rajarhat Borewell,Dewas,Madhya Pradesh,22.756483,82.494158,CGWB,Narmada
+Satna Railway Colony,Satna,Madhya Pradesh,25.576227,76.014041,Madhya Pradesh GWB,Godavari
+Jabalpur Campus,Jabalpur,Madhya Pradesh,21.979292,75.183497,Madhya Pradesh GWB,Chambal
+Ujjain Railway Colony,Ujjain,Madhya Pradesh,22.909556,79.984457,Madhya Pradesh GWB,Narmada
+Ratlam Industrial Area,Ratlam,Madhya Pradesh,21.799975,80.3758,CGWB,Chambal
+Jabalpur Cantonment,Jabalpur,Madhya Pradesh,21.862836,76.737822,Madhya Pradesh GWB,Son
+Indore Agricultural Station,Indore,Madhya Pradesh,24.704096,77.188965,Madhya Pradesh GWB,Son
+Rajarhat,Dewas,Madhya Pradesh,25.098751,81.457198,CGWB,Narmada
+Sagar Block,Sagar,Madhya Pradesh,25.312498,77.896819,Madhya Pradesh GWB,Chambal
+Bidhannagar,Ujjain,Madhya Pradesh,23.918818,76.744354,Madhya Pradesh GWB,Son
+Bhopal Circle Borewell,Bhopal,Madhya Pradesh,26.275512,80.479159,CGWB,Chambal
+Ratlam West,Ratlam,Madhya Pradesh,23.603587,74.005745,Madhya Pradesh GWB,Son
+Park Street,Indore,Madhya Pradesh,21.550706,77.063701,Madhya Pradesh GWB,Son
+Ratlam Industrial Estate,Ratlam,Madhya Pradesh,25.283331,80.419473,Madhya Pradesh GWB,Godavari
+Rewa Cantonment Borewell,Rewa,Madhya Pradesh,21.459838,79.046276,Madhya Pradesh GWB,Narmada
+Gwalior Salt Lake Borewell,Gwalior,Madhya Pradesh,26.830114,77.589668,CGWB,Narmada
+New Town,Gwalior,Madhya Pradesh,22.848774,81.488406,Madhya Pradesh GWB,Narmada
+Sagar Housing Board,Sagar,Madhya Pradesh,24.600884,75.394991,Madhya Pradesh GWB,Godavari
+Jabalpur West,Jabalpur,Madhya Pradesh,24.634848,77.760263,Madhya Pradesh GWB,Godavari
+Lower Gwalior,Gwalior,Madhya Pradesh,23.07406,77.649804,Madhya Pradesh GWB,Son
+Ujjain Market,Ujjain,Madhya Pradesh,25.595921,79.869047,Madhya Pradesh GWB,Narmada
+Jabalpur Sector V,Jabalpur,Madhya Pradesh,25.624429,80.747113,Madhya Pradesh GWB,Narmada
+Darjeeling Bidhannagar,Darjeeling,West Bengal,27.12523,89.62909,West Bengal GWB,Brahmaputra
+Kolkata Industrial Estate Borewell,Kolkata,West Bengal,26.940382,88.958505,West Bengal GWB,Ganga
+South 24 Parganas Medical Complex,South 24 Parganas,West Bengal,26.907476,87.431698,West Bengal GWB,Brahmaputra
+Old Jalpaiguri,Jalpaiguri,West Bengal,21.969839,87.999916,West Bengal GWB,Ganga
+Howrah Park Street,Howrah,West Bengal,24.557424,87.401999,West Bengal GWB,Ganga
+Malda University Campus Borewell,Malda,West Bengal,21.991413,87.581383,West Bengal GWB,Ganga
+Kolkata Village,Kolkata,West Bengal,22.180825,88.702392,CGWB,Brahmaputra
+South 24 Parganas Industrial Estate,South 24 Parganas,West Bengal,22.451689,86.320415,West Bengal GWB,Brahmaputra
+Jalpaiguri Industrial Estate,Jalpaiguri,West Bengal,23.050289,86.061875,West Bengal GWB,Ganga
+Sant Nadia,Nadia,West Bengal,24.347777,88.124233,West Bengal GWB,Ganga
+North 24 Parganas Block,North 24 Parganas,West Bengal,21.751016,89.338007,West Bengal GWB,Ganga
+Murshidabad Tehsil,Murshidabad,West Bengal,24.651329,89.547185,West Bengal GWB,Ganga
+New Kolkata,Kolkata,West Bengal,24.757755,86.289544,West Bengal GWB,Brahmaputra
+Salt Lake Borewell,South 24 Parganas,West Bengal,26.436384,88.971463,West Bengal GWB,Brahmaputra
+Nadia Cantonment,Nadia,West Bengal,25.715583,86.794594,CGWB,Ganga
+Kolkata Industrial Area,Kolkata,West Bengal,22.358228,89.62283,CGWB,Brahmaputra
+Maha South 24 Parganas,South 24 Parganas,West Bengal,21.508334,88.494946,West Bengal GWB,Ganga
+North 24 Parganas Cantonment,North 24 Parganas,West Bengal,25.556419,86.181409,West Bengal GWB,Ganga
+Murshidabad North,Murshidabad,West Bengal,24.810393,87.872254,CGWB,Ganga
+Murshidabad Agricultural Station,Murshidabad,West Bengal,23.162553,89.288746,West Bengal GWB,Brahmaputra
+Darjeeling Industrial Estate,Darjeeling,West Bengal,22.831584,89.668574,West Bengal GWB,Brahmaputra
+Nadia Circle,Nadia,West Bengal,23.28999,86.295021,West Bengal GWB,Ganga
+Upper Jalpaiguri Borewell,Jalpaiguri,West Bengal,26.103302,87.047281,West Bengal GWB,Brahmaputra
+South 24 Parganas New Town,South 24 Parganas,West Bengal,23.758593,86.000698,West Bengal GWB,Ganga
+Upper Darjeeling,Darjeeling,West Bengal,22.039934,86.21782,West Bengal GWB,Ganga
+Howrah Urban,Howrah,West Bengal,24.819246,86.861165,West Bengal GWB,Ganga
+New Nadia,Nadia,West Bengal,22.024278,89.273829,West Bengal GWB,Brahmaputra
+Murshidabad Rural,Murshidabad,West Bengal,24.32792,87.369191,West Bengal GWB,Ganga
+North 24 Parganas Railway Colony,North 24 Parganas,West Bengal,21.697502,88.338624,CGWB,Brahmaputra
+Darjeeling Municipal Area,Darjeeling,West Bengal,21.847581,86.947082,West Bengal GWB,Brahmaputra
+Cooch Behar Rajarhat,Cooch Behar,West Bengal,25.95692,87.27236,West Bengal GWB,Brahmaputra
+Greater Cooch Behar,Cooch Behar,West Bengal,21.83397,89.865278,CGWB,Ganga
+Mini Jalpaiguri,Jalpaiguri,West Bengal,25.855083,89.68599,West Bengal GWB,Ganga
+Munger Housing Board,Munger,Bihar,26.551049,85.058411,Bihar GWB,Kosi
+Lower Patna Borewell,Patna,Bihar,26.034799,84.177784,Bihar GWB,Kosi
+Muzaffarpur Park Street,Muzaffarpur,Bihar,27.237268,84.307322,CGWB,Ganga
+Muzaffarpur Village,Muzaffarpur,Bihar,24.370121,86.233046,Bihar GWB,Gandak
+Purnia Station,Purnia,Bihar,25.565906,83.805161,CGWB,Kosi
+Muzaffarpur Agricultural Farm,Muzaffarpur,Bihar,25.014359,86.244751,Bihar GWB,Gandak
+Munger East,Munger,Bihar,24.403625,86.311943,Bihar GWB,Gandak
+Darbhanga South,Darbhanga,Bihar,24.548981,85.034051,Bihar GWB,Gandak
+Mini Purnia,Purnia,Bihar,27.137291,85.53315,Bihar GWB,Ganga
+Arrah Park,Arrah,Bihar,24.454072,85.491101,Bihar GWB,Kosi
+Munger Agricultural Station,Munger,Bihar,24.624571,85.697446,Bihar GWB,Ganga
+Patna Rural,Patna,Bihar,26.857423,83.467064,Bihar GWB,Ganga
+Begusarai Industrial Estate,Begusarai,Bihar,25.381442,88.226381,Bihar GWB,Gandak
+Gaya Medical Complex,Gaya,Bihar,27.14721,84.085519,Bihar GWB,Gandak
+Patna Tehsil Borewell,Patna,Bihar,25.200874,84.487741,CGWB,Gandak
+Old Patna,Patna,Bihar,26.22069,84.298374,Bihar GWB,Kosi
+Purnia Block,Purnia,Bihar,25.807022,87.774387,CGWB,Kosi
+Begusarai Rajarhat,Begusarai,Bihar,24.897065,83.523085,Bihar GWB,Gandak
+Darbhanga Cantonment,Darbhanga,Bihar,26.435899,83.728537,Bihar GWB,Gandak
+Katihar Housing Board,Katihar,Bihar,24.495148,85.23553,Bihar GWB,Gandak
+Katihar Medical Complex,Katihar,Bihar,24.411131,86.1561,Bihar GWB,Kosi
+Old Bhagalpur,Bhagalpur,Bihar,24.853213,88.22184,Bihar GWB,Gandak
+Darbhanga Agricultural Station Borewell,Darbhanga,Bihar,24.77321,86.275238,Bihar GWB,Kosi
+Salt Lake,Katihar,Bihar,26.066573,87.583121,Bihar GWB,Kosi
+Munger University Campus,Munger,Bihar,24.66006,84.048212,CGWB,Ganga
+Purnia Railway Colony,Purnia,Bihar,26.100588,83.804952,Bihar GWB,Gandak
+Sant Patna,Patna,Bihar,25.853871,86.344811,Bihar GWB,Ganga
+Bhagalpur Nagar,Bhagalpur,Bihar,25.566537,87.694788,Bihar GWB,Kosi
+Mini Gaya,Gaya,Bihar,25.295038,87.514233,Bihar GWB,Gandak
+Arrah Cantonment,Arrah,Bihar,24.585718,85.508583,CGWB,Ganga
+Purnia University Campus,Purnia,Bihar,25.948863,84.094862,CGWB,Gandak
+Bhagalpur Junction Borewell,Bhagalpur,Bihar,27.113864,83.444741,Bihar GWB,Kosi
+Begusarai Cantonment,Begusarai,Bihar,26.554829,84.669887,Bihar GWB,Ganga
+Angul Park,Angul,Odisha,18.961303,84.330478,Odisha GWB,Mahanadi
+Cuttack Salt Lake,Cuttack,Odisha,21.820738,82.903692,Odisha GWB,Mahanadi
+Sambalpur Park Street Borewell,Sambalpur,Odisha,21.914134,85.313755,CGWB,Baitarni
+Berhampur Agricultural Station Borewell,Berhampur,Odisha,17.84271,86.951396,Odisha GWB,Brahmani
+Sector V,Rourkela,Odisha,21.221154,85.698083,Odisha GWB,Brahmani
+Puri Industrial Estate Borewell,Puri,Odisha,21.050542,86.410727,CGWB,Brahmani
+Rourkela Park Street Borewell,Rourkela,Odisha,20.494994,84.98139,CGWB,Baitarni
+New Rourkela,Rourkela,Odisha,19.360658,83.016687,CGWB,Baitarni
+Berhampur Industrial Estate,Berhampur,Odisha,19.739672,83.281432,CGWB,Brahmani
+Bhubaneswar Medical Complex,Bhubaneswar,Odisha,22.153176,83.808513,CGWB,Brahmani
+Dhenkanal Agricultural Station,Dhenkanal,Odisha,21.287439,82.678652,CGWB,Brahmani
+Upper Dhenkanal,Dhenkanal,Odisha,20.235111,86.541599,CGWB,Baitarni
+Balasore Industrial Estate,Balasore,Odisha,21.462007,82.435024,Odisha GWB,Brahmani
+Balasore Bidhannagar,Balasore,Odisha,19.818268,86.79843,Odisha GWB,Baitarni
+Cuttack Bidhannagar Borewell,Cuttack,Odisha,20.601158,87.154666,CGWB,Mahanadi
+Mayurbhanj New Town,Mayurbhanj,Odisha,22.56327,83.424553,CGWB,Brahmani
+Balasore Industrial Estate Borewell,Balasore,Odisha,19.396621,87.41717,Odisha GWB,Mahanadi
+Cuttack Industrial Area,Cuttack,Odisha,20.566139,82.282298,Odisha GWB,Brahmani
+Sambalpur Railway Colony,Sambalpur,Odisha,19.639919,81.533897,CGWB,Baitarni
+Sambalpur Village,Sambalpur,Odisha,18.714768,85.495838,Odisha GWB,Baitarni
+Bhubaneswar Rajarhat,Bhubaneswar,Odisha,20.625619,82.335525,Odisha GWB,Brahmani
+Balasore Salt Lake,Balasore,Odisha,22.062275,87.471929,Odisha GWB,Baitarni
+Park Street Borewell,Cuttack,Odisha,17.905184,84.428728,CGWB,Brahmani
+Mayurbhanj Industrial Area,Mayurbhanj,Odisha,21.501998,85.163436,Odisha GWB,Mahanadi
+Dhenkanal Medical Complex Borewell,Dhenkanal,Odisha,19.800523,83.657573,Odisha GWB,Mahanadi
+Mayurbhanj Housing Board,Mayurbhanj,Odisha,20.979918,82.973858,CGWB,Baitarni
+Cuttack Complex,Cuttack,Odisha,21.250078,82.029954,Odisha GWB,Baitarni
+Puri New Town,Puri,Odisha,22.470975,83.519115,Odisha GWB,Brahmani
+Cuttack Medical College,Cuttack,Odisha,19.386897,81.316976,CGWB,Baitarni
+Rourkela Housing Board,Rourkela,Odisha,18.160231,85.786173,CGWB,Brahmani
+Berhampur Village,Berhampur,Odisha,20.028531,81.918815,Odisha GWB,Baitarni
+Bhubaneswar Medical College,Bhubaneswar,Odisha,18.356325,86.577725,Odisha GWB,Brahmani
+Cuttack Rajarhat,Cuttack,Odisha,22.384428,82.963518,CGWB,Brahmani
+Kannur North,Kannur,Kerala,12.044258,76.593746,CGWB,West Coastal
+Pathanamthitta Cantonment,Pathanamthitta,Kerala,10.113727,76.335951,Kerala GWB,Cauvery
+Kozhikode Koramangala,Kozhikode,Kerala,11.012249,77.042697,Kerala GWB,Cauvery
+Kasaragod University Campus,Kasaragod,Kerala,11.212878,74.832137,Kerala GWB,Cauvery
+Pathanamthitta Research Station,Pathanamthitta,Kerala,10.587859,76.589428,Kerala GWB,Cauvery
+Shri Pathanamthitta,Pathanamthitta,Kerala,8.88381,76.948738,CGWB,West Coastal
+Thrissur Jayanagar,Thrissur,Kerala,8.54438,76.078285,Kerala GWB,Cauvery
+Kannur Cantonment Borewell,Kannur,Kerala,11.958675,75.00496,Kerala GWB,Cauvery
+Thiruvananthapuram North,Thiruvananthapuram,Kerala,8.746052,76.093171,Kerala GWB,West Coastal
+Kollam University Campus,Kollam,Kerala,11.842203,77.304245,Kerala GWB,Cauvery
+New Thrissur,Thrissur,Kerala,9.871375,74.941116,CGWB,Cauvery
+Kochi Park,Kochi,Kerala,10.719377,75.772115,CGWB,Cauvery
+Thrissur Block,Thrissur,Kerala,8.692023,76.388215,CGWB,West Coastal
+Malappuram Medical College,Malappuram,Kerala,11.497224,75.080191,CGWB,Cauvery
+Kasaragod Central,Kasaragod,Kerala,10.303984,76.332222,Kerala GWB,Cauvery
+Kasaragod Rural,Kasaragod,Kerala,12.058554,76.055623,Kerala GWB,Cauvery
+Palakkad Cantonment,Palakkad,Kerala,11.2246,76.376018,Kerala GWB,West Coastal
+Kollam Anna Nagar,Kollam,Kerala,9.458541,77.305343,CGWB,Cauvery
+Palakkad Medical Complex,Palakkad,Kerala,12.078142,76.224296,Kerala GWB,West Coastal
+Palakkad Housing Board,Palakkad,Kerala,9.164678,76.6574,Kerala GWB,West Coastal
+Palakkad Industrial Estate,Palakkad,Kerala,10.51791,76.605211,Kerala GWB,Cauvery
+Koramangala,Kasaragod,Kerala,11.30152,77.124052,Kerala GWB,West Coastal
+Kollam Medical College,Kollam,Kerala,8.444099,74.947172,CGWB,Cauvery
+Palakkad Agricultural Station,Palakkad,Kerala,9.138404,76.207047,Kerala GWB,Cauvery
+Kollam Medical Complex Borewell,Kollam,Kerala,9.292939,76.839199,Kerala GWB,Cauvery
+Palakkad Industrial Estate Borewell,Palakkad,Kerala,12.600829,77.337139,Kerala GWB,Cauvery
+Palakkad University Campus,Palakkad,Kerala,12.017924,77.169865,Kerala GWB,West Coastal
+Kochi Research Station,Kochi,Kerala,9.553218,75.261307,Kerala GWB,Cauvery
+Kozhikode Agricultural Station,Kozhikode,Kerala,9.483916,75.487023,Kerala GWB,West Coastal
+Pathanamthitta Industrial Area,Pathanamthitta,Kerala,8.383727,77.214433,Kerala GWB,Cauvery
+Kochi Railway Colony,Kochi,Kerala,11.833578,76.230416,CGWB,West Coastal
+Kasaragod Cantonment Borewell,Kasaragod,Kerala,11.816788,75.214363,Kerala GWB,West Coastal
+Kollam Complex,Kollam,Kerala,11.251339,75.660773,CGWB,West Coastal
+Jorhat University Campus,Jorhat,Assam,24.57036,91.945245,Assam GWB,Brahmaputra
+Dibrugarh Agricultural Station,Dibrugarh,Assam,26.898461,91.789809,Assam GWB,Barak
+Jorhat Bidhannagar Borewell,Jorhat,Assam,26.095899,91.637891,CGWB,Brahmaputra
+Jorhat Cantonment,Jorhat,Assam,26.670426,91.106845,Assam GWB,Barak
+Silchar Town Borewell,Silchar,Assam,26.750901,95.626457,Assam GWB,Brahmaputra
+Tinsukia Tehsil,Tinsukia,Assam,27.356281,93.260122,Assam GWB,Barak
+Dibrugarh Industrial Estate,Dibrugarh,Assam,25.397257,92.214912,Assam GWB,Brahmaputra
+Sant Bongaigaon Borewell,Bongaigaon,Assam,26.973616,90.250055,CGWB,Barak
+Guwahati Bidhannagar,Guwahati,Assam,25.663796,94.897159,Assam GWB,Barak
+Sant Bongaigaon,Bongaigaon,Assam,28.025306,89.869131,Assam GWB,Brahmaputra
+Nagaon Industrial Area,Nagaon,Assam,25.349234,94.439439,Assam GWB,Brahmaputra
+New Jorhat,Jorhat,Assam,25.005231,94.97544,CGWB,Barak
+Dibrugarh Salt Lake,Dibrugarh,Assam,26.743166,90.253496,CGWB,Barak
+Dibrugarh Bidhannagar,Dibrugarh,Assam,24.625682,93.863932,Assam GWB,Barak
+Tinsukia Village,Tinsukia,Assam,26.627004,91.695188,CGWB,Brahmaputra
+Jorhat Medical Complex,Jorhat,Assam,24.119811,91.326286,Assam GWB,Barak
+Sivasagar Sector V,Sivasagar,Assam,24.650654,94.344431,Assam GWB,Brahmaputra
+Tezpur Urban,Tezpur,Assam,26.746762,90.308237,CGWB,Brahmaputra
+Bongaigaon Industrial Estate,Bongaigaon,Assam,27.082444,95.331052,Assam GWB,Brahmaputra
+Bongaigaon Cantonment,Bongaigaon,Assam,27.815845,93.219883,Assam GWB,Barak
+Tezpur Market Borewell,Tezpur,Assam,25.015557,94.587298,Assam GWB,Brahmaputra
+Tinsukia Housing Board,Tinsukia,Assam,26.816982,95.057487,Assam GWB,Brahmaputra
+Silchar Medical Complex,Silchar,Assam,24.834495,95.682013,Assam GWB,Brahmaputra
+Tezpur New Town,Tezpur,Assam,27.222037,91.236849,CGWB,Barak
+Guwahati Town,Guwahati,Assam,25.691182,95.490992,CGWB,Barak
+Bongaigaon Housing Board,Bongaigaon,Assam,27.522976,91.43256,Assam GWB,Brahmaputra
+Jorhat West,Jorhat,Assam,26.218318,92.133238,Assam GWB,Barak
+Nagaon Medical Complex,Nagaon,Assam,24.96722,90.958815,Assam GWB,Barak
+Sivasagar Cantonment,Sivasagar,Assam,27.425808,94.265585,Assam GWB,Barak
+Tinsukia Industrial Estate,Tinsukia,Assam,24.192029,90.067495,Assam GWB,Brahmaputra
+Golaghat University Campus,Golaghat,Assam,25.158865,90.916233,CGWB,Barak
+Tinsukia Sector V,Tinsukia,Assam,27.983741,91.142879,Assam GWB,Brahmaputra
+Silchar New Town,Silchar,Assam,26.655168,92.96699,CGWB,Barak

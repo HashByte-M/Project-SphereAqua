@@ -1,0 +1,101 @@
+Station_name,District_name,State_name,Latitude,Longitude,Agency_name,Basin
+GWS001,Anantapur,Andhra Pradesh,13.279317,82.432404,Andhra Pradesh GW,Krishna
+GWS002,Anantapur,Andhra Pradesh,13.217466,82.425342,Andhra Pradesh GW,Pennar
+GWS003,Chittoor,Andhra Pradesh,12.722479,77.249562,Andhra Pradesh GW,Pennar
+GWS004,Visakhapatnam,Andhra Pradesh,16.428715,82.228157,CGWB,Godavari
+GWS005,Guntur,Andhra Pradesh,15.644463,78.725526,CGWB,Krishna
+GWS006,Anantapur,Andhra Pradesh,15.458301,78.722971,Andhra Pradesh GW,Godavari
+GWS007,Visakhapatnam,Andhra Pradesh,13.149221,77.273731,CGWB,Pennar
+GWS008,Tirunelveli,Tamil Nadu,12.439206,79.283793,Tamil Nadu GW,Krishna
+GWS009,Coimbatore,Tamil Nadu,11.036223,79.732321,Tamil Nadu GW,Krishna
+GWS010,Tiruchirappalli,Tamil Nadu,11.875145,76.20621,Tamil Nadu GW,Krishna
+GWS011,Coimbatore,Tamil Nadu,12.704247,79.899177,Tamil Nadu GW,Krishna
+GWS012,Salem,Tamil Nadu,8.894598,77.598718,Tamil Nadu GW,Vaigai
+GWS013,Coimbatore,Tamil Nadu,11.350221,76.770124,CGWB,Cauvery
+GWS014,Vellore,Tamil Nadu,10.087005,80.452855,Tamil Nadu GW,Vaigai
+GWS015,Mysuru,Karnataka,16.2923,77.792834,CGWB,Krishna
+GWS016,Shivamogga,Karnataka,11.724702,75.419539,Karnataka GW,Krishna
+GWS017,Kalaburagi,Karnataka,17.634573,75.41605,Karnataka GW,Cauvery
+GWS018,Tumakuru,Karnataka,14.711963,75.191961,Karnataka GW,Godavari
+GWS019,Kalaburagi,Karnataka,13.339191,76.630637,CGWB,Cauvery
+GWS020,Hubli-Dharwad,Karnataka,13.035245,78.488919,Karnataka GW,Krishna
+GWS021,Shivamogga,Karnataka,11.829815,74.493421,Karnataka GW,Godavari
+GWS022,Dhule,Maharashtra,19.376659,75.578138,Maharashtra GW,Narmada
+GWS023,Solapur,Maharashtra,21.812009,79.386238,Maharashtra GW,Krishna
+GWS024,Solapur,Maharashtra,20.495892,75.221404,Maharashtra GW,Godavari
+GWS025,Kolhapur,Maharashtra,15.521095,78.276736,CGWB,Godavari
+GWS026,Pune,Maharashtra,21.158371,74.887558,Maharashtra GW,Godavari
+GWS027,Nagpur,Maharashtra,17.93044,73.792392,CGWB,Krishna
+GWS028,Aurangabad,Maharashtra,18.675937,73.394942,Maharashtra GW,Tapi
+GWS029,Varanasi,Uttar Pradesh,24.188099,83.585072,CGWB,Ganga
+GWS030,Gorakhpur,Uttar Pradesh,29.267356,84.334884,Uttar Pradesh GW,Ganga
+GWS031,Agra,Uttar Pradesh,28.220331,84.101365,Uttar Pradesh GW,Yamuna
+GWS032,Varanasi,Uttar Pradesh,30.02372,82.664489,Uttar Pradesh GW,Yamuna
+GWS033,Bareilly,Uttar Pradesh,30.467501,81.874085,Uttar Pradesh GW,Yamuna
+GWS034,Kanpur,Uttar Pradesh,25.460968,77.480194,Uttar Pradesh GW,Ganga
+GWS035,Varanasi,Uttar Pradesh,23.848179,82.308807,Uttar Pradesh GW,Ganga
+GWS036,Jaipur,Rajasthan,29.189375,70.137716,Rajasthan GW,Sabarmati
+GWS037,Bikaner,Rajasthan,26.882484,76.010173,CGWB,Sabarmati
+GWS038,Bikaner,Rajasthan,28.64926,76.767473,Rajasthan GW,Indus
+GWS039,Pali,Rajasthan,25.550942,73.19992,CGWB,Indus
+GWS040,Jodhpur,Rajasthan,23.436411,76.053922,CGWB,Indus
+GWS041,Bikaner,Rajasthan,24.379449,74.326572,Rajasthan GW,Mahi
+GWS042,Ajmer,Rajasthan,26.330922,77.370374,Rajasthan GW,Indus
+GWS043,Ahmedabad,Gujarat,23.065081,71.513822,Gujarat GW,Narmada
+GWS044,Gandhi Nagar,Gujarat,23.98887,69.081022,Gujarat GW,Tapi
+GWS045,Gandhi Nagar,Gujarat,21.884889,68.38113,Gujarat GW,Mahi
+GWS046,Vadodara,Gujarat,24.354635,73.103341,Gujarat GW,Mahi
+GWS047,Surat,Gujarat,20.89252,69.415056,Gujarat GW,Narmada
+GWS048,Junagadh,Gujarat,21.473943,68.325925,Gujarat GW,Tapi
+GWS049,Ahmedabad,Gujarat,24.515661,68.520725,Gujarat GW,Narmada
+GWS050,Mohali,Punjab,32.085458,74.832459,CGWB,Sutlej
+GWS051,Amritsar,Punjab,31.236757,73.631147,Punjab GW,Sutlej
+GWS052,Patiala,Punjab,31.195681,74.54402,Punjab GW,Sutlej
+GWS053,Mohali,Punjab,30.442552,74.376528,Punjab GW,Sutlej
+GWS054,Jalandhar,Punjab,30.871674,76.56576,CGWB,Indus
+GWS055,Bathinda,Punjab,31.363478,75.357879,Punjab GW,Sutlej
+GWS056,Amritsar,Punjab,31.017654,73.937107,Punjab GW,Indus
+GWS057,Faridabad,Haryana,28.756392,75.020565,CGWB,Indus
+GWS058,Hisar,Haryana,29.579704,77.757869,Haryana GW,Yamuna
+GWS059,Karnal,Haryana,30.278154,75.48795,Haryana GW,Yamuna
+GWS060,Hisar,Haryana,27.892457,74.853219,Haryana GW,Ghaggar
+GWS061,Hisar,Haryana,29.556421,76.86812,Haryana GW,Indus
+GWS062,Rohtak,Haryana,28.397545,76.112155,CGWB,Yamuna
+GWS063,Gurugram,Haryana,29.656567,77.236849,Haryana GW,Ghaggar
+GWS064,Ratlam,Madhya Pradesh,21.771836,82.328283,Madhya Pradesh GW,Godavari
+GWS065,Ujjain,Madhya Pradesh,25.163438,78.767708,Madhya Pradesh GW,Chambal
+GWS066,Ujjain,Madhya Pradesh,21.212566,77.138336,Madhya Pradesh GW,Godavari
+GWS067,Indore,Madhya Pradesh,21.24679,77.099538,CGWB,Narmada
+GWS068,Gwalior,Madhya Pradesh,22.239452,76.121003,Madhya Pradesh GW,Godavari
+GWS069,Ujjain,Madhya Pradesh,25.421918,81.868992,Madhya Pradesh GW,Chambal
+GWS070,Ratlam,Madhya Pradesh,25.783553,81.492038,Madhya Pradesh GW,Son
+GWS071,North 24 Parganas,West Bengal,26.07274,89.342663,CGWB,Brahmaputra
+GWS072,Howrah,West Bengal,25.988035,86.243192,CGWB,Brahmaputra
+GWS073,Howrah,West Bengal,22.637565,89.565653,West Bengal GW,Ganga
+GWS074,Howrah,West Bengal,21.634887,86.591832,West Bengal GW,Ganga
+GWS075,Darjeeling,West Bengal,23.501533,87.888563,West Bengal GW,Brahmaputra
+GWS076,Kolkata,West Bengal,22.157448,89.778643,West Bengal GW,Brahmaputra
+GWS077,Patna,Bihar,24.646888,85.472819,CGWB,Kosi
+GWS078,Bhagalpur,Bihar,26.239868,85.857115,Bihar GW,Gandak
+GWS079,Gaya,Bihar,25.115112,86.843926,Bihar GW,Gandak
+GWS080,Darbhanga,Bihar,26.602176,87.00975,Bihar GW,Kosi
+GWS081,Bhagalpur,Bihar,24.523916,86.621188,Bihar GW,Kosi
+GWS082,Darbhanga,Bihar,27.013649,86.898771,Bihar GW,Kosi
+GWS083,Balasore,Odisha,19.760286,83.794882,Odisha GW,Mahanadi
+GWS084,Cuttack,Odisha,19.818142,87.130255,Odisha GW,Mahanadi
+GWS085,Rourkela,Odisha,20.531705,83.817666,CGWB,Brahmani
+GWS086,Berhampur,Odisha,18.808877,86.171705,Odisha GW,Brahmani
+GWS087,Sambalpur,Odisha,19.920573,85.488889,Odisha GW,Baitarni
+GWS088,Cuttack,Odisha,20.962484,83.059476,Odisha GW,Baitarni
+GWS089,Kozhikode,Kerala,8.629581,77.275199,Kerala GW,Cauvery
+GWS090,Kochi,Kerala,11.910189,75.18312,Kerala GW,Cauvery
+GWS091,Kollam,Kerala,12.108793,74.989353,Kerala GW,West Coastal
+GWS092,Palakkad,Kerala,11.40323,76.085381,Kerala GW,West Coastal
+GWS093,Thiruvananthapuram,Kerala,11.780734,75.368987,CGWB,Cauvery
+GWS094,Thiruvananthapuram,Kerala,10.764067,77.185422,Kerala GW,West Coastal
+GWS095,Jorhat,Assam,26.837069,95.924933,Assam GW,Barak
+GWS096,Tezpur,Assam,27.441527,95.330526,Assam GW,Barak
+GWS097,Dibrugarh,Assam,27.148987,92.742982,Assam GW,Brahmaputra
+GWS098,Nagaon,Assam,25.236977,94.621584,Assam GW,Brahmaputra
+GWS099,Silchar,Assam,25.903478,94.223978,Assam GW,Barak
+GWS100,Silchar,Assam,27.76141,90.299581,Assam GW,Barak

@@ -1,0 +1,10 @@
+fpdf
+streamlit
+pandas
+numpy
+plotly
+folium
+streamlit-folium
+statsmodels
+scikit-learn
+google-generativeai
