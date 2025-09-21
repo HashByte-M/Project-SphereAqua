@@ -827,7 +827,7 @@ elif selected_tab == tab_labels[2]:
 
                 Format the response in clear, professional markdown.
                 """
-                analysis = get_gemini_analysis(prompt)
+                analysis = get_gemini_analysis(prompt, api_key)
                 if analysis:
                     st.markdown(analysis)
                 else:
@@ -879,7 +879,7 @@ elif selected_tab == tab_labels[2]:
 
             Your response should be well-structured, informative, and formatted in professional markdown.
             """
-            analysis = get_gemini_analysis(prompt)
+            analysis = get_gemini_analysis(prompt, api_key)
             if analysis:
                 st.markdown(analysis)
             else:
@@ -918,7 +918,7 @@ elif selected_tab == tab_labels[3]:
 
                 Keep the analysis concise and focused on providing actionable insights for a water resource planner.
                 """
-                analysis = get_gemini_analysis(prompt)
+                analysis = get_gemini_analysis(prompt, api_key)
                 if analysis:
                     st.markdown(analysis)
                 else:
@@ -972,7 +972,7 @@ elif selected_tab == tab_labels[3]:
 
                 Provide clear, actionable recommendations in a markdown format.
                 """
-                analysis = get_gemini_analysis(prompt)
+                analysis = get_gemini_analysis(prompt, api_key)
                 if analysis:
                     st.markdown(analysis)
                 else:
@@ -1029,7 +1029,7 @@ elif selected_tab == tab_labels[4]:
 
                 Format the response as a concise analysis.
                 """
-                analysis = get_gemini_analysis(prompt)
+                analysis = get_gemini_analysis(prompt, api_key)
                 if analysis:
                     st.markdown(f"### AI-Powered Correlation Analysis: `{param1}` vs. `{param2}`")
                     st.markdown(analysis)
@@ -1133,7 +1133,7 @@ elif selected_tab == tab_labels[4]:
                     3.  **Model Implications**: Briefly comment on what the SARIMAX model parameters might suggest about the underlying data's properties (e.g., seasonality, trend).
                     4.  **Further Research**: Suggest two potential research questions or avenues for further investigation based on these results.
                     """
-                    analysis = get_gemini_analysis(prompt)
+                    analysis = get_gemini_analysis(prompt, api_key)
                     if analysis:
                         st.session_state.forecast_results['analysis'] = analysis
                         # st.rerun() # We remove the rerun to prevent the tab switch feeling
@@ -1201,7 +1201,7 @@ elif selected_tab == tab_labels[5]:
                 - End with a simple concluding sentence about the importance of using water wisely.
                 - Do not use technical jargon. Keep it very simple.
                 """
-                analysis = get_gemini_analysis(prompt)
+                analysis = get_gemini_analysis(prompt, api_key)
                 if analysis:
                     st.info(analysis)
                 else:
@@ -1256,7 +1256,7 @@ elif selected_tab == tab_labels[6]:
                 3. Any potential implications (e.g., signs of rapid depletion, recharge, or seasonal effects).
                 Keep the analysis concise and easy for a water resource manager to understand.
                 """
-                analysis = get_gemini_analysis(prompt)
+                analysis = get_gemini_analysis(prompt, api_key)
                 if analysis:
                     st.markdown(analysis)
                 else:
