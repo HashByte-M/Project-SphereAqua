@@ -1,1381 +1,818 @@
-# app.py
-# National Water Resources Intelligence Dashboard
-# A comprehensive Streamlit application for visualizing, analyzing, and forecasting water resource data.
-# This application integrates Google's Gemini AI for advanced data mapping, analysis, and reporting.
+# advanced_water_dashboard.py
+#
+# National Water Resources Intelligence Dashboard (Version 12.3 - Robust State Management)
+# This version fully adopts st.session_state for API key management, mirroring best
+# practices and fixing all AI-related state errors.
 
+# --- IMPORTANT SETUP INSTRUCTION ---
+# For the custom theme to work, you MUST create a folder named '.streamlit' in the
+# same directory as this script. Inside that folder, create a file named 'config.toml'
+# and paste the content from the provided config.toml file into it.
+
+# --- 0. CORE LIBRARY IMPORTS ---
+# Standard Libraries
 import streamlit as st
 import pandas as pd
+import numpy as np
+import io
+import json
+import warnings
+import time
+from datetime import datetime
+import base64
+from contextlib import contextmanager
+
+# Visualization Libraries
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import pydeck as pdk
+import altair as alt # For animated, declarative charts
+from streamlit_lottie import st_lottie # For loading animations
+
+# AI and Machine Learning Libraries
 import google.generativeai as genai
+from sklearn.linear_model import LinearRegression
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-import numpy as np
-import warnings
-import io
-import json
-import pydeck as pdk # Added for heatmap functionality
-from sklearn.linear_model import LinearRegression # Added for trend analysis
 
-# --- Page Configuration ---
-st.set_page_config(layout='wide', page_title='National Water Resources Intelligence Dashboard')
-
-# --- Suppress Warnings ---
+# --- 1. APPLICATION WIDE CONFIGURATION & STYLING ---
+st.set_page_config(
+    layout='wide',
+    page_title='AquaSphere-National Water Intelligence Dashboard',
+    page_icon="💧"
+)
 warnings.filterwarnings("ignore")
 
-# --- Gemini API Configuration ---
-st.sidebar.title("Configuration")
+# Custom CSS Injection for modern UI/UX
+st.markdown("""
 
-# --- NEW: AI Feature Toggle ---
-st.sidebar.toggle("Disable All AI Features", key="ai_disabled", help="Toggle this to run the app without AI. You will need to map data columns manually.")
-
-gemini_api_key = None
-if not st.session_state.get('ai_disabled', False):
-    gemini_api_key = st.sidebar.text_input("Enter your Gemini API Key:", type="password", key="gemini_key")
-    if gemini_api_key:
-        try:
-            genai.configure(api_key=gemini_api_key)
-        except Exception as e:
-            st.error(f"Error configuring Gemini API: {e}")
-else:
-    st.sidebar.info("AI features are off. Column mapping will be manual.")
+""", unsafe_allow_html=True)
 
 
-# -------------------- Helper Functions --------------------
+def set_page_background(svg_content):
+    """
+    Sets a base64 encoded SVG as the page background.
+    """
+    b64 = base64.b64encode(svg_content.encode('utf-8')).decode("utf-8")
+    page_bg_css = f"""
+    <style>
+    [data-testid="stAppViewContainer"] > .main {{
+        background-image: url("data:image/svg+xml;base64,{b64}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    [data-testid="stHeader"], [data-testid="stSidebar"] {{
+        background: rgba(0, 0, 0, 0);
+    }}
+    </style>
+    """
+    st.markdown(page_bg_css, unsafe_allow_html=True)
 
-# --- Corrected Code ---
+# A simple SVG for a subtle background pattern
+svg_background = """
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 800 800">
+    <g fill-opacity="0.03">
+        <circle fill="#7792E3" cx="400" cy="400" r="600"/>
+        <circle fill="#262730" cx="400" cy="400" r="500"/>
+        <circle fill="#0E1117" cx="400" cy="400" r="400"/>
+        <circle fill="#262730" cx="400" cy="400" r="300"/>
+        <circle fill="#7792E3" cx="400" cy="400" r="200"/>
+        <circle fill="#0E1117" cx="400" cy="400" r="100"/>
+    </g>
+</svg>
+"""
+set_page_background(svg_background)
 
-# --- Corrected Code ---
-def get_gemini_analysis(prompt, api_key): # Add api_key as an argument
-    """Generic function to call the Gemini API."""
-    if st.session_state.get('ai_disabled', False):
-        st.warning("AI features are currently disabled by the user.")
-        return None
-    
-    # Check the passed-in api_key argument directly
-    if not api_key:
-        st.warning("Please enter your Gemini API key for AI analysis.")
+# --- 2. ADVANCED HELPER & ANALYTICS FUNCTIONS ---
+
+@contextmanager
+def card(title=""):
+    """A context manager to wrap Streamlit elements in a styled card div."""
+    st.markdown(f"<div class='card'>", unsafe_allow_html=True)
+    if title:
+        st.subheader(title)
+    yield
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+# FIX: Embedded Lottie animation data to remove external dependency
+LOTTIE_ANIMATION_DATA = {
+    "v": "5.5.7", "fr": 30, "ip": 0, "op": 150, "w": 512, "h": 512, "nm": "Water Drop", "ddd": 0, "assets": [],
+    "layers": [
+        {"ddd": 0, "ind": 1, "ty": 4, "nm": "Drop 2", "sr": 1, "ks": {
+            "o": {"a": 0, "k": 100, "ix": 11}, "r": {"a": 0, "k": 0, "ix": 10},
+            "p": {"a": 1, "k": [
+                {"i": {"x": [0.667], "y": [1]}, "o": {"x": [0.333], "y": [0]}, "t": 30, "s": [256, -100, 0]},
+                {"i": {"x": [0.667], "y": [1]}, "o": {"x": [0.333], "y": [0]}, "t": 60, "s": [256, 256, 0]},
+                {"i": {"x": [0.667], "y": [1]}, "o": {"x": [0.333], "y": [0]}, "t": 90, "s": [256, 624, 0]},
+                {"t": 120, "s": [256, 256, 0]}
+            ], "ix": 2},
+            "a": {"a": 0, "k": [0, 0, 0], "ix": 1}, "s": {"a": 0, "k": [100, 100, 100], "ix": 6}
+        }, "ao": 0, "shapes": [
+            {"ty": "gr", "it": [
+                {"ind": 0, "ty": "sh", "ix": 1, "ks": {"a": 0, "k": {
+                    "i": [[-44.184, 0], [0, 80.667], [44.184, 0], [0, -80.667]],
+                    "o": [[44.184, 0], [0, -80.667], [-44.184, 0], [0, 80.667]],
+                    "v": [[0, -146], [-80.667, 0], [0, 146], [80.667, 0]], "c": True
+                }, "ix": 2}, "nm": "Path 1", "mn": "ADBE Vector Shape - Group", "hd": False},
+                {"ty": "fill", "c": {"a": 0, "k": [0.125490196078, 0.541176470588, 0.835294117647, 1], "ix": 4}, "o": {"a": 0, "k": 100, "ix": 5}, "nm": "Fill 1", "mn": "ADBE Vector Graphic - Fill", "hd": False}
+            ], "nm": "Shape Group", "np": 2, "cix": 2, "bm": 0, "ix": 1, "mn": "ADBE Vector Group", "hd": False}
+        ], "ip": 0, "op": 150, "st": 0, "bm": 0},
+        {"ddd": 0, "ind": 2, "ty": 4, "nm": "Drop 1", "sr": 1, "ks": {
+            "o": {"a": 0, "k": 100, "ix": 11}, "r": {"a": 0, "k": 0, "ix": 10},
+            "p": {"a": 1, "k": [
+                {"i": {"x": [0.667], "y": [1]}, "o": {"x": [0.333], "y": [0]}, "t": 0, "s": [256, -100, 0]},
+                {"i": {"x": [0.667], "y": [1]}, "o": {"x": [0.333], "y": [0]}, "t": 30, "s": [256, 256, 0]},
+                {"i": {"x": [0.667], "y": [1]}, "o": {"x": [0.333], "y": [0]}, "t": 60, "s": [256, 624, 0]},
+                {"t": 90, "s": [256, 256, 0]}
+            ], "ix": 2},
+            "a": {"a": 0, "k": [0, 0, 0], "ix": 1}, "s": {"a": 0, "k": [100, 100, 100], "ix": 6}
+        }, "ao": 0, "shapes": [
+            {"ty": "gr", "it": [
+                {"ind": 0, "ty": "sh", "ix": 1, "ks": {"a": 0, "k": {
+                    "i": [[-44.184, 0], [0, 80.667], [44.184, 0], [0, -80.667]],
+                    "o": [[44.184, 0], [0, -80.667], [-44.184, 0], [0, 80.667]],
+                    "v": [[0, -146], [-80.667, 0], [0, 146], [80.667, 0]], "c": True
+                }, "ix": 2}, "nm": "Path 1", "mn": "ADBE Vector Shape - Group", "hd": False},
+                {"ty": "fill", "c": {"a": 0, "k": [0.247058823529, 0.650980392157, 0.901960784314, 1], "ix": 4}, "o": {"a": 0, "k": 100, "ix": 5}, "nm": "Fill 1", "mn": "ADBE Vector Graphic - Fill", "hd": False}
+            ], "nm": "Shape Group", "np": 2, "cix": 2, "bm": 0, "ix": 1, "mn": "ADBE Vector Group", "hd": False}
+        ], "ip": 0, "op": 150, "st": 0, "bm": 0},
+        {"ddd": 0, "ind": 3, "ty": 4, "nm": "Puddle", "sr": 1, "ks": {
+            "o": {"a": 0, "k": 100, "ix": 11}, "r": {"a": 0, "k": 0, "ix": 10},
+            "p": {"a": 0, "k": [256, 452, 0], "ix": 2},
+            "a": {"a": 0, "k": [292.5, 75.5, 0], "ix": 1},
+            "s": {"a": 1, "k": [
+                {"i": {"x": [0.667], "y": [1]}, "o": {"x": [0.333], "y": [0]}, "t": 30, "s": [0, 0, 100]},
+                {"i": {"x": [0.667], "y": [1]}, "o": {"x": [0.333], "y": [0]}, "t": 60, "s": [57, 57, 100]},
+                {"i": {"x": [0.667], "y": [1]}, "o": {"x": [0.333], "y": [0]}, "t": 90, "s": [30, 30, 100]},
+                {"t": 120, "s": [57, 57, 100]}
+            ], "ix": 6}
+        }, "ao": 0, "shapes": [
+            {"ty": "gr", "it": [
+                {"ind": 0, "ty": "sh", "ix": 1, "ks": {"a": 0, "k": {
+                    "i": [[-159.988, 0], [0, 41.694], [159.988, 0], [0, -41.694]],
+                    "o": [[159.988, 0], [0, -41.694], [-159.988, 0], [0, 41.694]],
+                    "v": [[0, -75.5], [-292, 0], [0, 75.5], [292, 0]], "c": True
+                }, "ix": 2}, "nm": "Path 1", "mn": "ADBE Vector Shape - Group", "hd": False},
+                {"ty": "fill", "c": {"a": 0, "k": [0.247, 0.651, 0.902, 1], "ix": 4}, "o": {"a": 0, "k": 100, "ix": 5}, "nm": "Fill 1", "mn": "ADBE Vector Graphic - Fill", "hd": False}
+            ], "nm": "Shape Group", "np": 2, "cix": 2, "bm": 0, "ix": 1, "mn": "ADBE Vector Group", "hd": False}
+        ], "ip": 0, "op": 150, "st": 0, "bm": 0}
+    ]
+}
+
+def animated_metric(column, label, value, unit="", help_text="", delta=None, delta_color="normal"):
+    """Displays an st.metric with a number-counting animation."""
+    placeholder = column.empty()
+    is_float = isinstance(value, float)
+    num_decimals = 2 if is_float else 0
+    steps = 50
+    sleep_duration = 0.8 / (steps + 1)
+    for i in range(steps + 1):
+        current_display_value = (value / steps) * i
+        with placeholder.container():
+             st.metric(
+                label=label,
+                value=f"{current_display_value:,.{num_decimals}f} {unit}",
+                delta=delta,
+                delta_color=delta_color,
+                help=help_text
+            )
+        time.sleep(sleep_duration)
+
+def get_gemini_response(prompt: str) -> str | None:
+    """Centralized function to communicate with the Gemini API. Assumes API is already configured."""
+    if st.session_state.get('ai_disabled', False) or not st.session_state.get("gemini_key"):
+        st.error("AI features are disabled or API key is not provided.")
         return None
     try:
-        genai.configure(api_key=api_key)
         model = genai.GenerativeModel('gemini-1.5-flash-latest')
-        with st.spinner("🤖 Calling the AI... Please wait."):
-            response = model.generate_content(prompt)
+        with st.spinner("🤖 Communicating with Google Gemini AI..."):
+            response = model.generate_content(prompt, request_options={"timeout": 180})
         return response.text
     except Exception as e:
-        st.error(f"Could not get analysis from Gemini. Error: {e}")
+        st.error(f"Error with Gemini API: {e}")
         return None
-# --- Corrected Code ---
+
 @st.cache_data
-def get_ai_column_mapping(raw_columns, target_schema, api_key): # Add api_key
-    """
-    Uses AI to map raw CSV columns to the application's standard schema.
-    """
-    prompt = f"""
-    You are an expert data mapping AI. Your task is to map a list of raw column headers from a user's CSV file to a standard schema.
-    The standard schema headers are: {target_schema}
-    The user's raw CSV headers are: {raw_columns}
+def perform_ai_column_mapping(raw_columns: list, target_schema: list, file_name: str) -> dict | None:
+    """Uses AI to map raw CSV columns to the application's standard schema."""
+    prompt = f"""Act as an expert data ingestion pipeline assistant. Your sole task is to map column headers from a user's uploaded CSV file (`{file_name}`) to a predefined standard schema: `{target_schema}`. The raw headers are: `{raw_columns}`. Analyze the user's headers flexibly (case, symbols, abbreviations). Return ONLY a single raw JSON object mapping EACH standard header to a raw header, or to `null` if no match is found. Do not include any text or markdown formatting outside the JSON object."""
+    response_text = get_gemini_response(prompt)
+    if not response_text: return None
+    try: return json.loads(response_text.strip().replace("```json", "").replace("```", ""))
+    except json.JSONDecodeError: st.error(f"AI returned invalid mapping for {file_name}."); return None
 
-    Analyze the user's headers and return a JSON object that maps EACH standard schema header to the corresponding raw header from the user's list.
-    - Be flexible with variations like case, spacing, symbols ('_','-'), and common abbreviations (e.g., 'lat' for 'latitude').
-    - If a standard header has NO corresponding match in the user's list, map it to null.
-    - Your entire response must be ONLY the JSON object, with no other text or formatting.
-    """
-    response_text = get_gemini_analysis(prompt, api_key) # Pass the api_key down
-    if not response_text:
-        return None
-    try:
-        json_str = response_text.strip().replace("```json", "").replace("```", "")
-        return json.loads(json_str)
-    except json.JSONDecodeError:
-        st.error("AI returned an invalid mapping format. Please check your file columns and try again.")
-        return None
-
-# --- NEW: Manual Column Mapping Function ---
-def manual_column_mapper(file_name, raw_columns, target_schema):
+def render_manual_column_mapper(file_name: str, raw_columns: list, target_schema: list) -> dict:
     """Creates a UI for manually mapping columns."""
-    st.write(f"**Manually map columns for `{file_name}`:**")
-    mapping = {}
-    options = [None] + raw_columns
-    for standard_col in target_schema:
-        # Try to find a likely match to set as default index
-        try:
-            cleaned_standard = standard_col.lower().replace("_", "")
-            likely_matches = [i for i, col in enumerate(raw_columns) if cleaned_standard in col.lower().replace("_", "")]
-            default_index = likely_matches[0] + 1 if likely_matches else 0 # +1 for the None option
-        except Exception:
-            default_index = 0
-
-        selected_col = st.selectbox(
-            f"Which column is `{standard_col}`?",
-            options=options,
-            index=default_index,
-            key=f"map_{file_name}_{standard_col}"
-        )
-        if selected_col:
-            mapping[standard_col] = selected_col
+    st.write(f"**Map columns for `{file_name}`:**")
+    mapping, options = {}, [None] + raw_columns
+    for std_col in target_schema:
+        likely_match = next((col for col in raw_columns if std_col.lower().replace("_", "") in col.lower().replace("_", "")), None)
+        idx = options.index(likely_match) if likely_match in options else 0
+        selected = st.selectbox(f"Map for `{std_col}`:", options, index=idx, key=f"map_{file_name}_{std_col}")
+        if selected: mapping[std_col] = selected
     return mapping
 
-
-# --- Main Data Loading and Processing Functions ---
-
 @st.cache_data
-def load_and_normalize_data(uploaded_file_content, ai_mapping):
-    """
-    Loads CSV content, renames columns based on AI mapping, and normalizes data.
-    """
+def load_and_normalize_data(uploaded_file_content: bytes, mapping: dict) -> pd.DataFrame:
+    """Loads CSV data, renames columns, and performs data normalization."""
     df = pd.read_csv(io.BytesIO(uploaded_file_content))
-    
-    # Build the rename map robustly, handling strings or lists from the AI
-    rename_map = {}
-    if ai_mapping:
-        for standard_col, raw_col_val in ai_mapping.items():
-            if isinstance(raw_col_val, str) and raw_col_val in df.columns:
-                rename_map[raw_col_val] = standard_col
-            elif isinstance(raw_col_val, list):
-                for col_option in raw_col_val:
-                    if col_option in df.columns:
-                        rename_map[col_option] = standard_col
-                        break
-    
+    rename_map = {v: k for k, v in mapping.items() if v is not None and v in df.columns}
     df.rename(columns=rename_map, inplace=True)
-    
     str_cols = ['station_name', 'state_name', 'district_name', 'agency_name', 'basin']
     for col in str_cols:
-        if col in df.columns:
-            df[col] = df[col].astype(str).str.strip().str.title()
-    
+        if col in df.columns: df[col] = df[col].astype(str).str.strip().str.title()
     if 'timestamp' in df.columns:
         df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-    
-    numeric_cols = ['groundwaterlevel_mbgl', 'rainfall_mm', 'temperature_c', 'ph', 'turbidity_ntu', 'tds_ppm']
+        df.dropna(subset=['timestamp'], inplace=True)
+    numeric_cols = ['latitude', 'longitude', 'groundwaterlevel_mbgl', 'rainfall_mm', 'temperature_c', 'ph', 'turbidity_ntu', 'tds_ppm']
     for col in numeric_cols:
-        if col in numeric_cols:
-            if col in df.columns:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
-
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+            if col == 'ph': df.loc[(df[col] < 0) | (df[col] > 14), col] = np.nan
+            elif col in ['rainfall_mm', 'turbidity_ntu', 'tds_ppm']: df.loc[df[col] < 0, col] = np.nan
     return df
 
-def classify_files(uploaded_files):
-    """
-    Intelligently classifies files based on their columns. This version is more flexible.
-    """
-    file_contents = {f.name: f.getvalue() for f in uploaded_files}
-    probable_roles = {'timeseries': None, 'stations': []}
-    
-    for file in uploaded_files:
-        try:
-            temp_df = pd.read_csv(io.BytesIO(file_contents[file.name]), nrows=5)
-            cols_cleaned = {col.lower().strip().replace('_', '').replace('-', '') for col in temp_df.columns}
-            
-            has_timestamp = any(ts_name in cols_cleaned for ts_name in ['timestamp', 'date', 'datetime'])
-            has_lat = any(lat_name in cols_cleaned for lat_name in ['latitude', 'lat'])
-            has_lon = any(lon_name in cols_cleaned for lon_name in ['longitude', 'lon', 'long'])
-            
-            if has_timestamp:
-                probable_roles['timeseries'] = file.name
-            elif has_lat and has_lon:
-                probable_roles['stations'].append(file.name)
-        except Exception as e:
-            st.sidebar.warning(f"Could not read `{file.name}` during initial check. Skipping. Error: {e}")
-            
-    return probable_roles, file_contents
-
 @st.cache_data
-def get_processed_data(ts_data, filtered_stations, time_range_days=None):
-    if filtered_stations.empty or ts_data is None:
-        return pd.DataFrame()
-    
-    station_names_to_filter = filtered_stations['station_name'].unique()
-    df_filtered = ts_data[ts_data['station_name'].isin(station_names_to_filter)].copy()
-    
-    if df_filtered.empty:
-        return pd.DataFrame()
-
-    numeric_cols = df_filtered.select_dtypes(include=np.number).columns.tolist()
-    agg_dict = {col: 'mean' for col in numeric_cols}
-    
-    if 'station_name' in df_filtered.columns:
-        agg_dict['station_name'] = 'count'
-        df_agg = df_filtered.groupby('timestamp').agg(agg_dict).rename(columns={'station_name': 'station_count'}).reset_index()
-    else:
-        df_agg = df_filtered.groupby('timestamp').agg(agg_dict).reset_index()
-
-    if time_range_days:
-        df_for_filtering = df_agg.set_index('timestamp')
-        df_final = df_for_filtering.last(f'{time_range_days}D').reset_index()
-    else:
-        df_final = df_agg.copy()
-        
-    return df_final
-
-def haversine(lat1, lon1, lat2, lon2):
-    """
-    Calculate the great-circle distance between two points on the earth (specified in decimal degrees).
-    """
-    R = 6371
-    lat1_rad, lon1_rad, lat2_rad, lon2_rad = map(np.radians, [lat1, lon1, lat2, lon2])
-    
-    dlon = lon2_rad - lon1_rad
-    dlat = lat2_rad - lat1_rad
-    
-    a = np.sin(dlat / 2)**2 + np.cos(lat1_rad) * np.cos(lat2_rad) * np.sin(dlon / 2)**2
-    c = 2 * np.arcsin(np.sqrt(a))
-    
-    distance = R * c
-    return distance
-
-def find_nearest_station(gw_station, rainfall_stations):
-    """Finds the closest rainfall station to a given groundwater station using Haversine formula."""
-    if rainfall_stations is None or rainfall_stations.empty: return None, 0
-    lat1, lon1 = gw_station['latitude'], gw_station['longitude']
-    
-    distances = haversine(lat1, lon1, rainfall_stations['latitude'], rainfall_stations['longitude'])
-    
-    nearest_idx = distances.idxmin()
-    nearest_station_info = rainfall_stations.loc[nearest_idx]
-    return nearest_station_info, distances.min()
-
-# --- NEW: Data Quality Reporting ---
-@st.cache_data
-def generate_data_quality_report(df, df_name):
-    """Generates a markdown report on data quality for a given DataFrame."""
-    report = f"### Data Quality: `{df_name}`\n"
-    report += f"- **Shape**: {df.shape[0]} rows, {df.shape[1]} columns\n"
-    
-    missing_data = df.isnull().sum()
-    missing_percent = (missing_data / len(df)) * 100
-    missing_report = missing_percent[missing_percent > 0].sort_values(ascending=False)
-    
+def generate_data_quality_report(df: pd.DataFrame, df_name: str) -> str:
+    """Generates a detailed markdown report on data quality."""
+    report = f"#### Quality Analysis: `{df_name}`\n- **Dimensions**: {df.shape[0]} rows & {df.shape[1]} columns.\n"
+    missing = df.isnull().sum()
+    missing_pct = (missing / len(df)) * 100 if len(df) > 0 else 0
+    missing_report = missing_pct[missing_pct > 0].sort_values(ascending=False)
     if not missing_report.empty:
-        report += "- **Missing Values**:\n"
-        for col, percent in missing_report.items():
-            report += f"  - `{col}`: {percent:.1f}% missing\n"
-    else:
-        report += "- **Missing Values**: None found. ✅\n"
-        
-    if 'timestamp' in df.columns:
-        if df['timestamp'].duplicated().any():
-             report += f"- **Duplicate Timestamps**: Found {df['timestamp'].duplicated().sum()} duplicates. ⚠️\n"
-
-    numeric_cols = df.select_dtypes(include=np.number).columns
-    for col in numeric_cols:
-        if (df[col] < 0).any():
-             report += f"- **Negative Values**: Found in `{col}`. Investigate if appropriate. ⚠️\n"
+        report += "- **Missing Values Analysis**:\n"
+        for col, pct in missing_report.items(): report += f"  - `{col}`: **{pct:.1f}% missing** ({missing[col]} values).\n"
+    else: report += "- **Missing Values**: None detected. ✅\n"
+    if 'timestamp' in df.columns and 'station_name' in df.columns:
+        dupes = df.duplicated(subset=['timestamp', 'station_name']).sum()
+        if dupes > 0: report += f"- **Duplicate Records**: Found **{dupes}** duplicate pairs. ⚠️\n"
+    for col in ['groundwaterlevel_mbgl', 'rainfall_mm', 'temperature_c']:
+        if col in df.columns and not df[col].dropna().empty:
+            q1, q3 = df[col].quantile(0.25), df[col].quantile(0.75)
+            iqr = q3 - q1
+            if iqr > 0:
+                outliers = ((df[col] < (q1 - 1.5 * iqr)) | (df[col] > (q3 + 1.5 * iqr))).sum()
+                if outliers > 0: report += f"- **Potential Outliers**: Detected {outliers} in `{col}`.\n"
     return report
 
-# --- MODIFIED: Policy Status Summary ---
-@st.cache_data
-def get_regional_status_summary(_ts_data, _gw_stations, group_by_col='state_name', critical_quantile=0.75):
-    """Calculates regional groundwater status for the Policy tab with a configurable threshold."""
-    if 'station_name' not in _ts_data.columns or 'station_name' not in _gw_stations.columns:
-        return pd.DataFrame()
-        
-    merged_df = pd.merge(_ts_data, _gw_stations, on='station_name', how='left').dropna(subset=[group_by_col])
+def classify_files_with_heuristics(uploaded_files: list) -> tuple:
+    """Intelligently classifies files based on column names."""
+    file_contents = {f.name: f.getvalue() for f in uploaded_files}
+    roles, candidates = {'timeseries': None, 'stations_gw': None, 'stations_rf': None}, []
+    for file in uploaded_files:
+        try:
+            cols = pd.read_csv(io.BytesIO(file_contents[file.name]), nrows=0).columns.str.lower().str.replace('[_-]', '', regex=True)
+            score = 0
+            if any(ts in cols for ts in ['timestamp', 'date', 'datetime']): score += 10
+            if 'latitude' in cols and 'longitude' in cols: score += 5
+            if any(gw in cols for gw in ['groundwater', 'gwl', 'mbgl']): score += 2
+            if any(rf in cols for rf in ['rainfall', 'rain']): score += 1
+            candidates.append((score, file.name))
+        except Exception: candidates.append((-1, file.name))
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    if len(candidates) >= 1 and candidates[0][0] >= 10: roles['timeseries'] = candidates.pop(0)[1]
+    if len(candidates) >= 1 and candidates[0][0] >= 5: roles['stations_gw'] = candidates.pop(0)[1]
+    if len(candidates) >= 1 and candidates[0][0] >= 5: roles['stations_rf'] = candidates.pop(0)[1]
+    return roles, file_contents
 
-    def get_status(group):
-        if group.empty or 'groundwaterlevel_mbgl' not in group.columns:
-            return pd.Series({'status': 'No Data'})
-        
-        sorted_group = group.sort_values(by='timestamp')
-        water_levels = sorted_group['groundwaterlevel_mbgl'].dropna()
-        
-        if len(water_levels) < 2:
-            return pd.Series({'status': 'No Data'})
-            
-        latest_level = water_levels.iloc[-1]
-        critical_level = water_levels.quantile(critical_quantile) # Use the configurable quantile
-        return pd.Series({'status': 'Low/Critical' if latest_level > critical_level else 'Normal'})
-            
-    status_df = merged_df.groupby('station_name').apply(get_status).reset_index()
-    
-    # --- CORRECTED CODE ---
-    # Use a set to ensure column names are unique before selecting and merging
-    cols_to_merge = list(set(['station_name', group_by_col]))
-    status_summary = pd.merge(status_df, _gw_stations[cols_to_merge], on='station_name', how='left')
-    
-    status_counts = status_summary.groupby([group_by_col, 'status']).size().reset_index(name='count')
-    return status_counts
-
-# --- NEW: Trend Calculation Function ---
 @st.cache_data
-def calculate_trend_stations(_ts_data):
-    """Calculates long-term trends for all stations."""
-    station_trends = {}
+def calculate_long_term_station_trends(_ts_data: pd.DataFrame) -> pd.DataFrame:
+    """Calculates long-term trends for all stations using Linear Regression."""
+    trends = {}
     for name, group in _ts_data.groupby('station_name'):
-        df_station = group.dropna(subset=['groundwaterlevel_mbgl', 'timestamp']).sort_values('timestamp')
-        if len(df_station) > 10: # Require a minimum number of data points
-            df_station['time_ordinal'] = (df_station['timestamp'] - df_station['timestamp'].min()).dt.days
-            X = df_station[['time_ordinal']]
-            y = df_station['groundwaterlevel_mbgl']
-            
-            model = LinearRegression()
-            model.fit(X, y)
-            # Slope * 365 gives the approximate annual change in meters.
-            # Positive slope is bad (deeper water level), negative is good.
-            station_trends[name] = model.coef_[0] * 365 
-            
-    trends_df = pd.DataFrame(station_trends.items(), columns=['station_name', 'annual_trend_m'])
-    return trends_df.sort_values('annual_trend_m', ascending=False)
+        df_s = group.dropna(subset=['groundwaterlevel_mbgl', 'timestamp']).sort_values('timestamp')
+        if len(df_s) > 30:
+            df_s['time_ord'] = (df_s['timestamp'] - df_s['timestamp'].min()).dt.days
+            model = LinearRegression().fit(df_s[['time_ord']], df_s['groundwaterlevel_mbgl'])
+            trends[name] = model.coef_[0] * 365
+    return pd.DataFrame(trends.items(), columns=['station_name', 'annual_trend_m'])
 
-# --- NEW: Monsoon Analysis Function ---
 @st.cache_data
-def analyze_monsoon_performance(_df_station):
+def analyze_monsoon_performance(_df_station: pd.DataFrame) -> pd.DataFrame:
     """Analyzes pre and post monsoon water levels for a single station."""
     df = _df_station.set_index('timestamp')
     df['year'] = df.index.year
-    
     pre_monsoon = df[df.index.month.isin([3, 4, 5])].groupby('year')['groundwaterlevel_mbgl'].mean()
     post_monsoon = df[df.index.month.isin([10, 11, 12])].groupby('year')['groundwaterlevel_mbgl'].mean()
-    
-    monsoon_df = pd.DataFrame({'pre_monsoon_level': pre_monsoon, 'post_monsoon_level': post_monsoon})
-    monsoon_df.dropna(inplace=True)
-    monsoon_df['recharge_effect_m'] = monsoon_df['pre_monsoon_level'] - monsoon_df['post_monsoon_level']
+    monsoon_df = pd.DataFrame({'pre_monsoon_level_mbgl': pre_monsoon, 'post_monsoon_level_mbgl': post_monsoon}).dropna()
+    monsoon_df['recharge_effect_m'] = monsoon_df['pre_monsoon_level_mbgl'] - monsoon_df['post_monsoon_level_mbgl']
     return monsoon_df.reset_index()
 
-# --- NEW: Drought Detection Function ---
 @st.cache_data
-def detect_drought_events(_df_station, percentile_threshold=80):
-    """Identifies historical drought periods based on a water level percentile."""
-    if 'groundwaterlevel_mbgl' not in _df_station or _df_station['groundwaterlevel_mbgl'].dropna().empty:
-        return []
-        
+def detect_drought_events(_df_station: pd.DataFrame, percentile_threshold: int = 80) -> list:
+    """Identifies historical drought periods."""
+    if 'groundwaterlevel_mbgl' not in _df_station or _df_station['groundwaterlevel_mbgl'].dropna().empty: return []
     threshold = np.percentile(_df_station['groundwaterlevel_mbgl'].dropna(), percentile_threshold)
     df = _df_station[['timestamp', 'groundwaterlevel_mbgl']].copy()
     df['in_drought'] = df['groundwaterlevel_mbgl'] > threshold
-    
-    # Find blocks of consecutive drought days
     df['drought_block'] = (df['in_drought'].diff(1) != 0).astype('int').cumsum()
-    
-    drought_periods = []
+    periods = []
     for block in df[df['in_drought']]['drought_block'].unique():
-        drought_days = df[df['drought_block'] == block]
-        start_date = drought_days['timestamp'].min().date()
-        end_date = drought_days['timestamp'].max().date()
-        duration = (end_date - start_date).days + 1
-        peak_level = drought_days['groundwaterlevel_mbgl'].max()
-        if duration > 30: # Only consider events longer than 30 days
-            drought_periods.append({
-                'Start': start_date, 'End': end_date, 'Duration (Days)': duration, f'Peak Level (mbgl)': peak_level
-            })
-    return drought_periods
+        days = df[df['drought_block'] == block]
+        duration = (days['timestamp'].max() - days['timestamp'].min()).days + 1
+        if duration > 30: periods.append({'Start': days['timestamp'].min().date(), 'End': days['timestamp'].max().date(), 'Duration (Days)': duration, f'Peak Level (mbgl)': days['groundwaterlevel_mbgl'].max()})
+    return periods
 
-# --- State Management Callback ---
-def reset_forecast_state():
-    """Resets session state variables related to the forecast."""
-    st.session_state.forecast_generated = False
-    if 'forecast_results' in st.session_state:
-        st.session_state.forecast_results = {}
-    if 'report_data' in st.session_state:
-        del st.session_state['report_data']
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371; lat1_rad, lon1_rad, lat2_rad, lon2_rad = map(np.radians, [lat1, lon1, lat2, lon2])
+    dlon, dlat = lon2_rad - lon1_rad, lat2_rad - lat1_rad
+    a = np.sin(dlat / 2)**2 + np.cos(lat1_rad) * np.cos(lat2_rad) * np.sin(dlon / 2)**2
+    return R * 2 * np.arcsin(np.sqrt(a))
 
+def find_nearest_station(source_station, target_stations_df):
+    """Finds the closest station from a DataFrame to a given source station."""
+    if target_stations_df.empty or any(k not in source_station for k in ['latitude', 'longitude']) or 'latitude' not in target_stations_df.columns: return None, np.inf
+    distances = haversine(source_station['latitude'], source_station['longitude'], target_stations_df['latitude'], target_stations_df['longitude'])
+    return target_stations_df.loc[distances.idxmin()], distances.min()
 
-# -------------------- Main App UI --------------------
-st.title('💧 National Water Resources Intelligence Dashboard')
+@st.cache_data
+def get_regional_status(ts, gw, col, quant):
+    """Calculates regional groundwater status."""
+    if gw.empty or col not in gw.columns: return pd.DataFrame()
+    merged = pd.merge(ts, gw[['station_name', col]], on='station_name', how='left').dropna(subset=[col])
+    if merged.empty: return pd.DataFrame()
+    latest = merged.loc[merged.groupby('station_name')['timestamp'].idxmax()]
+    thresholds = merged.groupby('station_name')['groundwaterlevel_mbgl'].quantile(quant)
+    latest['threshold'] = latest['station_name'].map(thresholds)
+    latest['status'] = np.where(latest['groundwaterlevel_mbgl'] > latest['threshold'], 'Low/Critical', 'Normal')
+    return latest.groupby([col, 'status']).size().reset_index(name='count')
 
-st.sidebar.header("Upload Your Data")
-uploaded_files = st.sidebar.file_uploader(
-    "Upload your 3 CSV files (GW Stations, RF Stations, Time-Series)", 
-    type=['csv'], 
-    accept_multiple_files=True
-)
+# --- 3. SIDEBAR / CONTROL PANEL UI ---
 
-if len(uploaded_files) != 3:
-    st.info("Welcome! Please upload your three required CSV files to begin.")
+st.sidebar.title("⚙️ Control Panel")
+st.sidebar.header("1. System Configuration")
+st.sidebar.toggle("Disable All AI Features", key="ai_disabled", help="Run in manual mode without Gemini AI.")
+
+# Use text_input to get the key and store it in session_state
+if not st.session_state.ai_disabled:
+    st.sidebar.text_input("Enter Gemini API Key:", type="password", key="gemini_key")
+
+# Configure the API once at the start if the key exists in the session state
+try:
+    if st.session_state.get("gemini_key"):
+        genai.configure(api_key=st.session_state.gemini_key)
+except Exception as e:
+    st.error(f"Error configuring Gemini API: {e}")
+
+st.sidebar.header("2. Data Ingestion")
+uploaded_files = st.sidebar.file_uploader("Upload 3 CSVs (GW Stations, RF Stations, Time-Series)", type=['csv'], accept_multiple_files=True)
+
+# Lottie animation for loading
+if not uploaded_files:
+    if LOTTIE_ANIMATION_DATA:
+        st_lottie(LOTTIE_ANIMATION_DATA, height=300, key="loading_animation")
+    st.info("👋 **Welcome to the National Water Intelligence Dashboard!** Please upload the three required CSV files to begin.")
+    st.stop()
+elif len(uploaded_files) != 3:
+    st.info("👋 **Welcome!** Please ensure you upload exactly three CSV files to proceed.")
     st.stop()
 
-probable_roles, file_contents = classify_files(uploaded_files)
+# --- 4. CORE DATA PIPELINE LOGIC ---
+probable_roles, file_contents = classify_files_with_heuristics(uploaded_files)
+st.sidebar.info("Please confirm file assignments:")
+all_fnames = [f.name for f in uploaded_files]
+gw_station_fname = st.sidebar.selectbox("GW Station File:", all_fnames, index=all_fnames.index(probable_roles['stations_gw']) if probable_roles['stations_gw'] in all_fnames else 0)
+rf_station_fname = st.sidebar.selectbox("RF Station File:", all_fnames, index=all_fnames.index(probable_roles['stations_rf']) if probable_roles['stations_rf'] in all_fnames else 1)
+ts_fname = st.sidebar.selectbox("Time-Series Data File:", all_fnames, index=all_fnames.index(probable_roles['timeseries']) if probable_roles['timeseries'] in all_fnames else 2)
 
-if not probable_roles['timeseries'] or len(probable_roles['stations']) != 2:
-    st.sidebar.error("Could not automatically identify the roles of all 3 files. Ensure one is a time-series (with a 'timestamp' column) and two are station files (with 'latitude'/'longitude' columns).")
-    st.stop()
+if len({gw_station_fname, rf_station_fname, ts_fname}) != 3: st.sidebar.error("Each file assignment must be unique."); st.stop()
+
+# Initialize mapping variables
+gw_mapping, rf_mapping, ts_mapping = None, None, None
+
+with st.sidebar.expander("Column Mapping", expanded=False):
+    schemas = {'station': ['station_name', 'latitude', 'longitude', 'state_name', 'district_name', 'agency_name', 'basin'], 'timeseries': ['station_name', 'timestamp', 'groundwaterlevel_mbgl', 'rainfall_mm', 'temperature_c', 'ph', 'turbidity_ntu', 'tds_ppm']}
+    raw_cols = {name: pd.read_csv(io.BytesIO(file_contents[name]), nrows=0).columns.tolist() for name in file_contents}
     
-st.sidebar.markdown("---")
+    if not st.session_state.ai_disabled:
+        st.subheader("🤖 AI-Assisted Mapping")
+        if st.session_state.get("gemini_key"):
+            gw_mapping = perform_ai_column_mapping(raw_cols[gw_station_fname], schemas['station'], gw_station_fname)
+            rf_mapping = perform_ai_column_mapping(raw_cols[rf_station_fname], schemas['station'], rf_station_fname)
+            ts_mapping = perform_ai_column_mapping(raw_cols[ts_fname], schemas['timeseries'], ts_fname)
 
-st.sidebar.info("Please confirm the file assignments:")
-station_files_options = probable_roles['stations']
-gw_station_fname = st.sidebar.selectbox("Select Groundwater Station File:", options=station_files_options, index=0)
-
-default_rf_index = 1 if len(station_files_options) > 1 else 0
-rf_station_fname = st.sidebar.selectbox("Select Rainfall Station File:", options=station_files_options, index=default_rf_index)
-
-ts_fname = probable_roles['timeseries']
-
-if gw_station_fname == rf_station_fname:
-    st.sidebar.error("Groundwater and Rainfall station files cannot be the same. Please select different files.")
-    st.stop()
-
-st.sidebar.markdown("---")
-
-# --- MODIFIED: Column Mapping section to handle both AI and Manual modes ---
-with st.sidebar.expander("📝 Column Mapping", expanded=True):
-    schemas = {
-        'station': ['station_name', 'latitude', 'longitude', 'state_name', 'district_name', 'agency_name', 'basin'],
-        'timeseries': ['station_name', 'timestamp', 'groundwaterlevel_mbgl', 'rainfall_mm', 'temperature_c', 'ph', 'turbidity_ntu', 'tds_ppm']
-    }
-    
-    gw_raw_cols = pd.read_csv(io.BytesIO(file_contents[gw_station_fname]), nrows=0).columns.tolist()
-    rf_raw_cols = pd.read_csv(io.BytesIO(file_contents[rf_station_fname]), nrows=0).columns.tolist()
-    ts_raw_cols = pd.read_csv(io.BytesIO(file_contents[ts_fname]), nrows=0).columns.tolist()
-
-    if st.session_state.get('ai_disabled', False):
-        st.subheader("Manual Column Mapping")
-        gw_mapping = manual_column_mapper(gw_station_fname, gw_raw_cols, schemas['station'])
-        rf_mapping = manual_column_mapper(rf_station_fname, rf_raw_cols, schemas['station'])
-        ts_mapping = manual_column_mapper(ts_fname, ts_raw_cols, schemas['timeseries'])
-    # --- Corrected Code ---
+            if gw_mapping: st.json({"GW Stations": gw_mapping}, expanded=False)
+            if rf_mapping: st.json({"RF Stations": rf_mapping}, expanded=False)
+            if ts_mapping: st.json({"Time-Series": ts_mapping}, expanded=False)
+        else:
+            st.warning("Please enter your Gemini API key to use AI-assisted mapping.")
     else:
-        st.subheader("🤖 AI-Assisted Column Mapping")
-        # Get the API key from session state ONCE before making the calls
-        api_key = st.session_state.get("gemini_key")
+        st.subheader("Manual Mapping")
+        gw_mapping, rf_mapping, ts_mapping = render_manual_column_mapper(gw_station_fname, raw_cols[gw_station_fname], schemas['station']), render_manual_column_mapper(rf_station_fname, raw_cols[rf_station_fname], schemas['station']), render_manual_column_mapper(ts_fname, raw_cols[ts_fname], schemas['timeseries'])
 
-        st.write(f"**`{gw_station_fname}` (as GW):**")
-        gw_mapping = get_ai_column_mapping(gw_raw_cols, schemas['station'], api_key)
-        if gw_mapping: st.json(gw_mapping, expanded=False)
-
-        st.write(f"**`{rf_station_fname}` (as RF):**")
-        rf_mapping = get_ai_column_mapping(rf_raw_cols, schemas['station'], api_key)
-        if rf_mapping: st.json(rf_mapping, expanded=False)
-
-        st.write(f"**`{ts_fname}` (as Time-Series):**")
-        ts_mapping = get_ai_column_mapping(ts_raw_cols, schemas['timeseries'], api_key)
-        if ts_mapping: st.json(ts_mapping, expanded=False)
+# Final check for mapping completion
+mapping_is_done = all([gw_mapping, rf_mapping, ts_mapping])
+if not mapping_is_done:
+    if not st.session_state.ai_disabled and not st.session_state.get("gemini_key"):
+        st.info("👋 Please provide your Gemini API key in the sidebar to proceed with AI mapping, or disable AI for manual mapping.")
+        st.stop()
+    else:
+        st.error("Column mapping is incomplete. Please complete the mapping in the sidebar.")
+        st.stop()
 
 
-if not all([gw_mapping, rf_mapping, ts_mapping]):
-    st.error("Column mapping failed. Please map columns manually or check file headers/API key.")
-    st.stop()
-
-gw_stations = load_and_normalize_data(file_contents[gw_station_fname], gw_mapping)
-rf_stations = load_and_normalize_data(file_contents[rf_station_fname], rf_mapping)
-ts_data = load_and_normalize_data(file_contents[ts_fname], ts_mapping)
-
-gw_stations['station_type'] = 'Groundwater'
-rf_stations['station_type'] = 'Rainfall'
-
-# --- MODIFIED: Filter station data to only include stations with corresponding time-series records ---
-# This ensures that the dropdown menus and maps only show stations for which we have data to display.
-if 'station_name' not in ts_data.columns:
-    st.error("Fatal Error: Time-series file must contain a 'station_name' column after mapping.")
-    st.stop()
-
-# Create a single set of all station names that have time-series data.
+gw_stations, rf_stations, ts_data = load_and_normalize_data(file_contents[gw_station_fname], gw_mapping), load_and_normalize_data(file_contents[rf_station_fname], rf_mapping), load_and_normalize_data(file_contents[ts_fname], ts_mapping)
 ts_station_names = set(ts_data['station_name'].dropna().unique())
+gw_stations_filtered, rf_stations_filtered = gw_stations[gw_stations['station_name'].isin(ts_station_names)].copy(), rf_stations[rf_stations['station_name'].isin(ts_station_names)].copy()
 
-original_gw_count = len(gw_stations)
-original_rf_count = len(rf_stations)
-
-# Independently filter Groundwater stations: only keep stations that are found in the time-series file.
-if 'station_name' in gw_stations.columns:
-    gw_stations = gw_stations[gw_stations['station_name'].isin(ts_station_names)].copy()
-else:
-    st.error("Fatal Error: Groundwater station file must contain a 'station_name' column after mapping.")
-    st.stop()
-    
-# Independently filter Rainfall stations: only keep stations that are found in the time-series file.
-# Note: It is NOT required for a station to be in both the groundwater and rainfall station files.
-if 'station_name' in rf_stations.columns:
-    rf_stations = rf_stations[rf_stations['station_name'].isin(ts_station_names)].copy()
-else:
-    st.error("Fatal Error: Rainfall station file must contain a 'station_name' column after mapping.")
-    st.stop()
-
-st.sidebar.success("✔️ Files loaded and columns mapped successfully!")
-st.sidebar.info(
-    f"Found {len(gw_stations)} GW and {len(rf_stations)} RF stations with matching "
-    f"time-series data.\n(Original files: {original_gw_count} GW, {original_rf_count} RF)"
-)
-
-if gw_stations.empty:
-    st.error(
-        "Fatal Error: No groundwater stations from your station file match any stations "
-        "in your time-series file. Please check that station names are consistent across files."
-    )
-    st.stop()
-
-
-# --- NEW: Data Quality Report in Sidebar ---
-with st.sidebar.expander("📊 Automated Data Quality Report", expanded=True):
+st.sidebar.success(f"Loaded data for {len(gw_stations_filtered)} GW & {len(rf_stations_filtered)} RF stations.")
+with st.sidebar.expander("Data Quality Audit", expanded=True):
     st.markdown(generate_data_quality_report(gw_stations, gw_station_fname))
     st.markdown(generate_data_quality_report(rf_stations, rf_station_fname))
     st.markdown(generate_data_quality_report(ts_data, ts_fname))
 
-
-# --- Sidebar Filtering ---
-st.sidebar.header("Filter Stations")
+# --- 5. HIERARCHICAL SIDEBAR FILTERS ---
+def reset_downstream_cache(): st.session_state.pop('forecast_results', None); st.session_state.pop('report_data', None)
+st.sidebar.header("3. Analysis Filters")
 ALL = "All"
+all_stations_ui = pd.concat([gw_stations_filtered[['state_name', 'district_name', 'station_name', 'basin']], rf_stations_filtered[['state_name', 'district_name', 'station_name', 'basin']]]).drop_duplicates().sort_values('state_name')
+state = st.sidebar.selectbox("State:", [ALL] + sorted(all_stations_ui['state_name'].unique()), on_change=reset_downstream_cache, key='state_filter')
+if state != ALL: all_stations_ui = all_stations_ui[all_stations_ui['state_name'] == state]
+district = st.sidebar.selectbox("District:", [ALL] + sorted(all_stations_ui['district_name'].unique()), on_change=reset_downstream_cache, key='district_filter')
+if district != ALL: all_stations_ui = all_stations_ui[all_stations_ui['district_name'] == district]
+basin = st.sidebar.selectbox("River Basin:", [ALL] + sorted(all_stations_ui['basin'].dropna().unique()), on_change=reset_downstream_cache, key='basin_filter')
+if basin != ALL: all_stations_ui = all_stations_ui[all_stations_ui['basin'] == basin]
+station_name = st.sidebar.selectbox("GW Station:", [ALL] + sorted(all_stations_ui['station_name'].unique()), on_change=reset_downstream_cache, key='station_filter')
 
-# Create a unified, deduplicated list of all stations from both GW and RF files for populating the UI dropdowns.
-# This ensures that if a station/district/state is in either file, it appears in the filter options.
-all_stations_for_ui = pd.concat([
-    gw_stations[['state_name', 'district_name', 'station_name', 'basin']],
-    rf_stations[['state_name', 'district_name', 'station_name', 'basin']]
-]).drop_duplicates().sort_values(by=['state_name', 'district_name', 'station_name']).reset_index(drop=True)
-
-# --- Populate dropdowns using the unified list for a comprehensive selection ---
-# The lists for the selectboxes are derived from the combined `all_stations_for_ui` dataframe.
-state_list = [ALL] + sorted(all_stations_for_ui['state_name'].unique())
-state = st.sidebar.selectbox("Select State", state_list, on_change=reset_forecast_state)
-
-# Filter the UI options based on the selected state.
-stations_in_ui_scope = all_stations_for_ui
-if state != ALL:
-    stations_in_ui_scope = stations_in_ui_scope[stations_in_ui_scope['state_name'] == state]
-
-district_list = [ALL] + sorted(stations_in_ui_scope['district_name'].unique())
-district = st.sidebar.selectbox("Select District", district_list, on_change=reset_forecast_state)
-
-# Filter the UI options based on the selected district.
-if district != ALL:
-    stations_in_ui_scope = stations_in_ui_scope[stations_in_ui_scope['district_name'] == district]
-
-basin_list = [ALL] + sorted(stations_in_ui_scope['basin'].dropna().unique())
-basin = st.sidebar.selectbox("Select River Basin", basin_list, on_change=reset_forecast_state)
-
-# Filter the UI options based on the selected basin.
-if basin != ALL:
-    stations_in_ui_scope = stations_in_ui_scope[stations_in_ui_scope['basin'] == basin]
-
-station_list = [ALL] + sorted(stations_in_ui_scope['station_name'].unique())
-gw_station_name = st.sidebar.selectbox("Select Groundwater Station", station_list, on_change=reset_forecast_state)
-
-# --- Data Processing based on selection ---
-# Now, filter the actual `gw_stations` dataframe based on the selections made.
-# This ensures the rest of the app correctly processes only groundwater data as intended.
-stations_in_scope = gw_stations
-if state != ALL:
-    stations_in_scope = stations_in_scope[stations_in_scope['state_name'] == state]
-if district != ALL:
-    stations_in_scope = stations_in_scope[stations_in_scope['district_name'] == district]
-if basin != ALL:
-    stations_in_scope = stations_in_scope[stations_in_scope['basin'] == basin]
-
-single_station_mode = (gw_station_name != ALL)
-
-if single_station_mode:
-    filtered_gw_stations = stations_in_scope[stations_in_scope['station_name'] == gw_station_name]
-else:
-    filtered_gw_stations = stations_in_scope
-
-header_location = "India"
-if state != ALL: header_location = state
-if district != ALL: header_location = f"{district}, {state}"
-if basin != ALL: header_location = f"'{basin}' Basin"
-if single_station_mode: header_location = gw_station_name
-
-# --- Time Range Filter ---
-st.sidebar.header("Filter Data by Time Range")
+st.sidebar.header("4. Time Range Filter")
 time_range_options = {"Last 7 Days": 7, "Last 30 Days": 30, "Last 6 Months": 180, "Last Year": 365, "All Time": None}
-selected_range_label = st.sidebar.selectbox("Select Time Range:", options=list(time_range_options.keys()), key='global_time_filter', on_change=reset_forecast_state)
+selected_range_label = st.sidebar.selectbox("Time Range:", list(time_range_options.keys()), on_change=reset_downstream_cache, key='time_filter')
 days_to_filter = time_range_options[selected_range_label]
 
-# --- Main Data Processing ---
-df = get_processed_data(ts_data, filtered_gw_stations, days_to_filter)
-df_unfiltered = get_processed_data(ts_data, filtered_gw_stations, time_range_days=None)
+# --- 6. DYNAMIC DATA PROCESSING ---
+stations_in_scope = gw_stations_filtered.copy()
+if state != ALL: stations_in_scope = stations_in_scope[stations_in_scope['state_name'] == state]
+if district != ALL: stations_in_scope = stations_in_scope[stations_in_scope['district_name'] == district]
+if basin != ALL: stations_in_scope = stations_in_scope[stations_in_scope['basin'] == basin]
+single_station_mode = (station_name != ALL)
+if single_station_mode: stations_in_scope = stations_in_scope[stations_in_scope['station_name'] == station_name]
+if stations_in_scope.empty: st.warning("No GW stations match current filters."); st.stop()
 
-if df.empty:
-    st.warning(f"No time-series data available for the current selection in '{selected_range_label}'. Please adjust your filters.")
-    st.stop()
+df_base_filtered = ts_data[ts_data['station_name'].isin(stations_in_scope['station_name'])].copy()
+if days_to_filter: df_filtered = df_base_filtered[df_base_filtered['timestamp'] >= (df_base_filtered['timestamp'].max() - pd.Timedelta(days=days_to_filter))]
+else: df_filtered = df_base_filtered
+if df_filtered.empty: st.warning("No time-series data in selected time range."); st.stop()
 
-# --- Additional variables for single station mode ---
-selected_gw_station, nearest_rf_station, distance = None, None, 0
-if single_station_mode:
-    selected_gw_station = filtered_gw_stations.iloc[0]
-    nearest_rf_station, distance = find_nearest_station(selected_gw_station, rf_stations)
-
-
-# --- MODIFIED: Navigation with State Management ---
-tab_labels = [
-    "🗺️ Unified Map View", 
-    "📊 At-a-Glance Dashboard",
-    "⚖️ Policy & Governance",
-    "🏛️ Strategic Planning",
-    "🔬 Research Hub", 
-    "💧 Public Info", 
-    "🔬 Advanced Hydrology",
-    "📋 Generate Full Report"
-]
-
-# Initialize active_tab in session_state if it doesn't exist
-if 'active_tab' not in st.session_state:
-    st.session_state.active_tab = tab_labels[0]
-
-# Callback function to update the active tab
-def set_active_tab():
-    st.session_state.active_tab = st.session_state.navigation_radio
-
-# Get the index of the active tab for the radio button
-try:
-    default_tab_index = tab_labels.index(st.session_state.active_tab)
-except ValueError:
-    default_tab_index = 0
-
-st.radio(
-    "Main navigation", 
-    tab_labels, 
-    index=default_tab_index,
-    horizontal=True, 
-    label_visibility="collapsed",
-    key="navigation_radio", # Use a key for the widget
-    on_change=set_active_tab # Use a callback to update state
-)
-
+# --- 7. MAIN APPLICATION UI & TABS ---
+st.markdown('<div class="dashboard-title"><p class="gradient-text">National Water Resources Intelligence Dashboard</p></div>', unsafe_allow_html=True)
+tabs = ["🗺️ Unified Map", "📊 At-a-Glance", "⚖️ Policy", "🏛️ Strategic Planning", "🔬 Research Hub", "💧 Public Info", "🌊 Advanced Hydrology", "📋 Full Report"]
+if 'active_tab' not in st.session_state: st.session_state.active_tab = tabs[0]
+def set_active_tab(): st.session_state.active_tab = st.session_state.navigation_radio
+try: default_tab_index = tabs.index(st.session_state.active_tab)
+except ValueError: default_tab_index = 0
+st.radio("Main Navigation", tabs, index=default_tab_index, key="navigation_radio", on_change=set_active_tab, horizontal=True) #, label_visibility="collapsed")
 selected_tab = st.session_state.active_tab
 
+main_container = st.container()
+with main_container:
+    st.markdown("<div class='fade-in'>", unsafe_allow_html=True)
 
-# --- Tab Content Rendering ---
-
-# --- Unified Map View Tab ---
-if selected_tab == tab_labels[0]:
-    st.header(f"Water Monitoring Network in {header_location}")
-    
-    # --- NEW: Map View Controls ---
-    map_col1, map_col2, map_col3 = st.columns([2,2,1])
-    map_view_type = map_col1.radio("Select Map Style:", ["Points of Interest", "Heatmap (Density)"], horizontal=True)
-    
-    # --- NEW: Year-wise Filter ---
-    available_years = sorted(ts_data['timestamp'].dt.year.unique(), reverse=True)
-    selected_year = map_col2.selectbox("Analyze Geographic Status for Year:", ["All Time"] + available_years)
-
-    filtered_rf_stations = rf_stations.copy()
-    if state != ALL: filtered_rf_stations = filtered_rf_stations[filtered_rf_stations['state_name'] == state]
-    if district != ALL: filtered_rf_stations = filtered_rf_stations[filtered_rf_stations['district_name'] == district]
-    if basin != ALL: filtered_rf_stations = filtered_rf_stations[filtered_rf_stations['basin'] == basin]
-    
-    map_df_gw = filtered_gw_stations.copy()
-
-    # --- NEW: Logic for Year-wise Status Coloring ---
-    if selected_year != "All Time":
-        ts_year_data = ts_data[ts_data['timestamp'].dt.year == selected_year]
-        status_for_year = get_regional_status_summary(ts_year_data, gw_stations, group_by_col='station_name')
-        status_map = status_for_year.set_index('station_name')['status'].to_dict()
-        map_df_gw['status'] = map_df_gw['station_name'].map(status_map).fillna('No Data')
-        color_map = {'Low/Critical': '#FF0000', 'Normal': '#0000FF', 'No Data': '#808080'} # Red/Blue/Gray for status
-        map_df_gw['color'] = map_df_gw['status'].map(color_map)
-        info_text = f"🔵 Normal | 🔴 Low/Critical in {selected_year}"
-    else:
-        map_df_gw['color'] = '#0000FF' # Default color
-        info_text = "🔵 Groundwater Stations | 🟢 Rainfall Stations"
-
-    map_df_rf = filtered_rf_stations
-    map_df_rf['color'] = '#00FF00'
-    map_df = pd.concat([map_df_gw, map_df_rf]).reset_index(drop=True)
-
-    if map_view_type == "Heatmap (Density)":
-        st.pydeck_chart(pdk.Deck(
-            map_style='mapbox://styles/mapbox/dark-v9',
-            initial_view_state=pdk.ViewState(
-                latitude=map_df['latitude'].mean(),
-                longitude=map_df['longitude'].mean(),
-                zoom=6,
-                pitch=50,
-            ),
-            layers=[
-                pdk.Layer(
-                   'HexagonLayer',
-                   data=map_df[['latitude', 'longitude']],
-                   get_position='[longitude, latitude]',
-                   radius=5000,
-                   elevation_scale=100,
-                   elevation_range=[0, 1000],
-                   pickable=True,
-                   extruded=True,
-                ),
-            ],
-        ))
-    else: # Points of Interest
-        map_df['size'] = 500
-        if single_station_mode and selected_gw_station is not None:
-            map_df.loc[map_df['station_name'] == gw_station_name, ['color', 'size']] = ['#FFD700', 1000] # Gold for selected
-            if nearest_rf_station is not None:
-                map_df.loc[map_df['station_name'] == nearest_rf_station['station_name'], ['color', 'size']] = ['#FFA500', 1000]
-            info_text += f" | ⭐ Selected GW Station | 🟠 Nearest Rainfall Station ({distance:.2f} km away)"
-        st.map(map_df, latitude='latitude', longitude='longitude', color='color', size='size')
-
-    st.info(info_text)
-
-# --- At-a-Glance Dashboard Tab ---
-elif selected_tab == tab_labels[1]:
-    st.header(f"At-a-Glance Dashboard for: {header_location}")
-    st.subheader(f"Data for: {selected_range_label}")
-
-    # --- Interactive Agency Filter ---
-    st.markdown("---")
-    st.markdown("#### Agency Drill-Down")
-    agency_list = [ALL] + sorted(filtered_gw_stations['agency_name'].unique().tolist())
-    selected_agency = st.selectbox(
-        "Select an agency to filter the dashboard:",
-        options=agency_list,
-        help="Select an agency to see its specific metrics and highlight it on the chart."
-    )
-    
-    # Create a copy to filter for this tab only
-    tab_filtered_stations = filtered_gw_stations.copy()
-    if selected_agency != ALL:
-        tab_filtered_stations = tab_filtered_stations[tab_filtered_stations['agency_name'] == selected_agency]
-        st.info(f"Dashboard filtered for agency: **{selected_agency}**")
-
-    # Re-process data based on the potential new filter
-    df_tab = get_processed_data(ts_data, tab_filtered_stations, days_to_filter)
-    if df_tab.empty:
-        st.warning(f"No time-series data available for '{selected_agency}' in the selected time range.")
-        st.stop()
-    
-    if not single_station_mode:
-        station_count = len(tab_filtered_stations)
-        st.write(f"Displaying metrics for **{station_count}** station(s).")
-    
-    cols = st.columns(4)
-    if 'groundwaterlevel_mbgl' in df_tab.columns and not df_tab['groundwaterlevel_mbgl'].dropna().empty:
-        valid_gwl = df_tab['groundwaterlevel_mbgl'].dropna()
-        if len(valid_gwl) > 1:
-            delta_val = valid_gwl.iloc[-1] - valid_gwl.iloc[0]
-            cols[1].metric("Most Recent Level (mbgl)", f"{valid_gwl.iloc[-1]:.2f} m", f"{delta_val:.2f} m change", "inverse")
+    # --- TAB 1: Unified Map View ---
+    if selected_tab == tabs[0]:
+        st.header("🗺️ Unified Geographic Network View")
+        st.write("Visualize the geographic distribution and density of monitoring stations.")
+        c1, c2 = st.columns([1, 2])
+        map_view_type = c1.radio("Map Style:", ["Points of Interest", "Heatmap (Density)"])
+        available_years = sorted(ts_data['timestamp'].dt.year.unique(), reverse=True)
+        selected_year = c2.selectbox("Yearly Status:", ["All Time"] + available_years)
+        map_df_gw = stations_in_scope.copy()
+        map_df_rf = rf_stations_filtered[rf_stations_filtered['state_name'].isin(map_df_gw['state_name'].unique())].copy()
+        info_text = "🔵 GW Stations | 🟢 RF Stations"
+        
+        if selected_year != "All Time":
+            ts_year_data = ts_data[ts_data['timestamp'].dt.year == selected_year]
+            status_for_year = get_regional_status(ts_year_data, gw_stations_filtered, 'station_name', 0.75)
+            status_map = status_for_year.set_index('station_name')['status'].to_dict()
+            map_df_gw['status'] = map_df_gw['station_name'].map(status_map).fillna('No Data')
+            color_map = {'Low/Critical': '#FF0000', 'Normal': '#0000FF', 'No Data': '#808080'}
+            map_df_gw['color'] = map_df_gw['status'].map(color_map)
+            info_text = f"Status in {selected_year}: 🔵 Normal | 🔴 Low/Critical | ⚫ No Data"
         else:
-            cols[1].metric("Most Recent Level (mbgl)", f"{valid_gwl.iloc[-1]:.2f} m")
-        cols[0].metric("Avg Water Level (mbgl)", f"{valid_gwl.mean():.2f} m")
-    
-    if 'rainfall_mm' in df_tab.columns and not df_tab['rainfall_mm'].dropna().empty:
-        cols[2].metric("Avg Rainfall", f"{df_tab['rainfall_mm'].mean():.2f} mm")
-    if 'ph' in df_tab.columns and not df_tab['ph'].dropna().empty:
-        cols[3].metric("Avg pH", f"{df_tab['ph'].mean():.2f}")
-    
-    cols2 = st.columns(4)
-    if 'temperature_c' in df_tab.columns and not df_tab['temperature_c'].dropna().empty:
-        cols2[0].metric("Avg Temperature", f"{df_tab['temperature_c'].mean():.1f} °C")
-    if 'turbidity_ntu' in df_tab.columns and not df_tab['turbidity_ntu'].dropna().empty:
-        cols2[1].metric("Latest Turbidity", f"{df_tab['turbidity_ntu'].dropna().iloc[-1]:.2f} NTU")
-    if 'tds_ppm' in df_tab.columns and not df_tab['tds_ppm'].dropna().empty:
-        cols2[2].metric("Latest TDS", f"{df_tab['tds_ppm'].dropna().iloc[-1]:.2f} ppm")
-
-    st.markdown("---")
-    st.markdown(f"#### Agency Contribution in {header_location}")
-    agency_dist = filtered_gw_stations['agency_name'].value_counts()
-    
-    # --- Logic to "pull" the selected slice ---
-    pull_values = [0.2 if agency == selected_agency else 0 for agency in agency_dist.index]
-
-    # --- Custom Color Palette resembling the image ---
-    custom_colors = ['#EF5350', '#66BB6A', '#29B6F6', '#FFEE58', '#AB47BC', '#FF7043'] # Red, Green, Light Blue, Yellow, Purple, Orange
-    
-    fig_pie = px.pie(agency_dist, values=agency_dist.values, names=agency_dist.index,
-                     title=f'Groundwater Stations by Agency',
-                     hole=0.4, # Creates the donut chart effect
-                     template='plotly_dark',
-                     color_discrete_sequence=custom_colors # Apply custom colors
-                    )
-    fig_pie.update_traces(
-        pull=pull_values, # This is the key parameter for interaction
-        textinfo='percent+label',
-        marker=dict(line=dict(color='#FFFFFF', width=2)),
-    )
-    fig_pie.update_layout(
-        legend_title_text='Agencies',
-        title_font_size=20,
-        legend_font_size=12
-    )
-    st.plotly_chart(fig_pie, use_container_width=True)
-
-# --- Policy & Governance Tab ---
-elif selected_tab == tab_labels[2]:
-    st.header(f"Policy & Governance Dashboard")
-    analysis_level = st.radio("Analyze Groundwater Stress by:", ("State", "River Basin"), horizontal=True)
-    group_by_col = 'state_name' if analysis_level == "State" else 'basin'
-    
-    st.markdown(f"### 1. Regional Groundwater Stress Hotspots by {analysis_level}")
-    # --- NEW: Configurable Threshold Slider ---
-    critical_percentile = st.slider(
-        "Define 'Critical' Level (Percentile of deepest historical levels):", 
-        min_value=50, max_value=95, value=75, step=5,
-        help="A station's latest reading is 'Critical' if it's deeper than this percentile of its all-time readings."
-    )
-    
-    status_counts = get_regional_status_summary(
-        ts_data, gw_stations, group_by_col=group_by_col, critical_quantile=critical_percentile / 100.0
-    )
-    
-    if state != ALL and group_by_col == 'state_name':
-        status_counts = status_counts[status_counts['state_name'] == state]
-    if basin != ALL and group_by_col == 'basin':
-        status_counts = status_counts[status_counts['basin'] == basin]
+            map_df_gw['color'] = '#0066FF'
         
-    if not status_counts.empty:
-        fig_policy_status = px.bar(status_counts, x=group_by_col, y='count', color='status',
-                                   title=f'Groundwater Status of Monitored Wells by {analysis_level}',
-                                   labels={group_by_col: analysis_level, 'count': 'Number of Stations'},
-                                   color_discrete_map={'Low/Critical': '#d9534f', 'Normal': '#5cb85c', 'No Data': '#777777'},
-                                   template='plotly_dark')
-        fig_policy_status.update_layout(bargap=0.2, legend_title_text='Status', yaxis_title="Number of Stations", xaxis_title=analysis_level)
-        st.plotly_chart(fig_policy_status, use_container_width=True)
+        map_df_rf['color'] = '#00CC66'
+        map_df_gw['size'], map_df_rf['size'] = 25, 25
         
-        # --- MODIFIED: Conditionally render AI button ---
-        if not st.session_state.get('ai_disabled', False):
-            if st.button("Get AI Policy Briefing", key='policy_briefing_ai'):
-                prompt_data = status_counts.to_json(orient='records')
-                prompt = f"""
-                As a senior water resource policy advisor for the Government of India, analyze the following data summary of groundwater stress across different regions ({analysis_level}s).
-                The data shows the number of monitoring stations categorized as 'Normal' or 'Low/Critical'.
-
-                Data:
-                {prompt_data}
-
-                Based on this data, please provide a concise policy briefing that includes:
-                1.  **Executive Summary**: A brief overview of the current situation.
-                2.  **Key Hotspots**: Identify the top 2-3 most stressed regions ({analysis_level}s) that require immediate attention.
-                3.  **Policy Recommendations**: Suggest 3 concrete, actionable policy recommendations to address the issues in the identified hotspots. Recommendations should be practical for implementation in the Indian context.
-                4.  **Data Gaps**: Briefly mention if there are any potential data gaps or what additional information would be beneficial for a more detailed analysis.
-
-                Format the response in clear, professional markdown.
-                """
-                analysis = get_gemini_analysis(prompt, api_key)
-                if analysis:
-                    st.markdown(analysis)
-                else:
-                    st.error("Failed to generate AI analysis. Please check your API key and try again.")
-    else:
-        st.warning(f"Not enough data to generate regional stress analysis for the selected {analysis_level}(s).")
-    
-    st.markdown("---")
-    # --- NEW: Improving vs. Declining Stations ---
-    st.markdown("### 2. Long-Term Station Trends")
-    with st.spinner("Analyzing long-term trends for all stations..."):
-        all_trends_df = calculate_trend_stations(ts_data)
+        if single_station_mode and not stations_in_scope.empty:
+            selected_gw_station = stations_in_scope.iloc[0]
+            map_df_gw.loc[map_df_gw['station_name'] == station_name, 'color'], map_df_gw.loc[map_df_gw['station_name'] == station_name, 'size'] = '#FFD700', 100
+            if not map_df_rf.empty:
+                nearest_rf_station, distance = find_nearest_station(selected_gw_station, map_df_rf)
+                if nearest_rf_station is not None:
+                    map_df_rf.loc[map_df_rf['station_name'] == nearest_rf_station['station_name'], 'color'], map_df_rf.loc[map_df_rf['station_name'] == nearest_rf_station['station_name'], 'size'] = '#FFA500', 100
+                info_text += f" | ⭐ Selected GW | 🟠 Nearest RF ({distance:.2f} km)"
         
-    if not all_trends_df.empty:
-        declining_df = all_trends_df[all_trends_df['annual_trend_m'] > 0].head(5)
-        improving_df = all_trends_df[all_trends_df['annual_trend_m'] < 0].sort_values('annual_trend_m').head(5)
+        map_df = pd.concat([map_df_gw, map_df_rf]).reset_index(drop=True).dropna(subset=['latitude', 'longitude'])
         
-        col1, col2 = st.columns(2)
-        with col1:
-            st.error("Top 5 Declining Stations")
-            st.dataframe(declining_df, column_config={
-                "station_name": "Station Name",
-                "annual_trend_m": st.column_config.NumberColumn("Annual Decline (m/year)", format="%.3f m")
-            })
-        with col2:
-            st.success("Top 5 Improving Stations")
-            st.dataframe(improving_df, column_config={
-                "station_name": "Station Name",
-                "annual_trend_m": st.column_config.NumberColumn("Annual Improvement (m/year)", format="%.3f m")
-            })
-    else:
-        st.info("Insufficient long-term data to calculate station trends.")
-
-    st.markdown("---")
-    # --- MODIFIED: Conditionally render AI feature ---
-    if not st.session_state.get('ai_disabled', False):
-        st.markdown("### 3. AI Policy Simulator & Advisor")
-        policy_goal = st.selectbox("Select Policy Goal:", ["Increase Groundwater Recharge", "Reduce Water Depletion", "Improve Drought Resilience", "Ensure Equitable Water Access", "Modernize Water Governance"])
-        if st.button(f"Generate Policy Brief for '{policy_goal}'", key='policy_brief_ai'):
-            prompt = f"""
-            As a water policy expert specializing in Indian water governance, create a detailed policy brief on the topic: **"{policy_goal}"**.
-
-            The brief should be structured as follows:
-            1.  **Introduction**: Briefly explain the importance of this policy goal in the context of India's water security challenges.
-            2.  **Key Challenges**: Outline 2-3 major challenges in achieving this goal in India.
-            3.  **Strategic Interventions**: Propose a set of 3-5 strategic interventions or policy measures. For each intervention, provide a brief description of what it entails and its potential impact.
-            4.  **Implementation Roadmap**: Suggest key steps for implementing these strategies, including the roles of central government, state governments, and local bodies.
-            5.  **Conclusion**: A short concluding paragraph summarizing the importance of action.
-
-            Your response should be well-structured, informative, and formatted in professional markdown.
-            """
-            analysis = get_gemini_analysis(prompt, api_key)
-            if analysis:
-                st.markdown(analysis)
-            else:
-                st.error("Failed to generate AI analysis. Please check your API key and try again.")
-
-
-# --- Strategic Planning Tab ---
-elif selected_tab == tab_labels[3]:
-    st.header(f"Strategic Planning Dashboard for: {header_location}")
-    if single_station_mode and 'groundwaterlevel_mbgl' in df_unfiltered.columns and not df_unfiltered.empty:
-        st.info("This dashboard uses the complete historical dataset for long-term strategic analysis.")
-        st.markdown("---")
-        st.markdown("### 1. Long-Term Historical Water Level Trend")
-        
-        fig_long_term = px.line(df_unfiltered, x='timestamp', y='groundwaterlevel_mbgl', 
-                                title='Complete History of Water Levels', template='plotly_dark', markers=True)
-        fig_long_term.update_traces(marker=dict(size=5))
-        fig_long_term.update_layout(yaxis_title='Groundwater Level (mbgl)', xaxis_title='Date')
-        st.plotly_chart(fig_long_term, use_container_width=True)
-
-        # --- MODIFIED: Conditionally render AI button ---
-        if not st.session_state.get('ai_disabled', False):
-            if st.button("Get AI Trend Analysis for Planning", key='planning_analysis_ai'):
-                prompt_data = df_unfiltered[['timestamp', 'groundwaterlevel_mbgl']].tail(100).to_string()
-                prompt = f"""
-                As a senior hydrologist preparing a report for strategic planning, analyze the following long-term historical water level data for the station: **{gw_station_name}**.
-                The 'groundwaterlevel_mbgl' is meters below ground level (a higher number means a lower water level).
-
-                Recent Data Sample:
-                {prompt_data}
-
-                Based on the overall trend (not just this sample), provide an analysis covering:
-                1.  **Overall Trend Identification**: Describe the primary long-term trend (e.g., stable, declining, recharging, cyclical).
-                2.  **Seasonal Patterns**: Comment on any observable seasonal variations (e.g., impact of monsoon).
-                3.  **Implications for Planning**: What are the key strategic implications of this trend? For example, if the trend is declining, what does this mean for future water availability and the need for intervention?
-
-                Keep the analysis concise and focused on providing actionable insights for a water resource planner.
-                """
-                analysis = get_gemini_analysis(prompt, api_key)
-                if analysis:
-                    st.markdown(analysis)
-                else:
-                    st.error("Failed to generate AI analysis. Please check your API key and try again.")
-
-        st.markdown("---")
-        st.markdown("### 2. Sustainable Yield Estimation")
-        sy_planning = st.number_input("Enter Specific Yield (Sy) for Planning:", 0.01, 0.50, 0.15, 0.01, key='sy_planning')
-        
-        planning_df = df_unfiltered.set_index('timestamp').asfreq('D').interpolate()
-        
-        planning_df['gw_level_change'] = planning_df['groundwaterlevel_mbgl'].diff()
-        planning_df['recharge_mm'] = planning_df.apply(lambda row: (row['gw_level_change'] * -1 * sy_planning * 1000) if row['gw_level_change'] < 0 else 0, axis=1)
-
-        avg_annual_recharge = planning_df['recharge_mm'].resample('Y').sum().mean()
-        sustainable_yield_mm = avg_annual_recharge * 0.7 
-        st.metric("Average Estimated Annual Recharge", f"{avg_annual_recharge:.2f} mm/year")
-        st.metric("Estimated Sustainable Yield", f"{sustainable_yield_mm:.2f} mm/year", help="Calculated as 70% of recharge, a common heuristic for sustainable extraction.")
-        
-        st.markdown("---")
-        st.markdown("### 3. Supply vs. Demand Scenario Modeling")
-        area_influence = st.number_input("Enter Area of Influence (sq. km):", 0.1, value=10.0, step=1.0, key='area_planning')
-        sustainable_volume_m3 = (sustainable_yield_mm / 1000) * (area_influence * 1_000_000)
-        projected_demand_m3_day = st.number_input("Enter Projected Daily Demand (m³):", 0, value=1000, step=100)
-        projected_demand_m3_year = projected_demand_m3_day * 365
-        st.write(f"**Estimated Sustainable Supply:** {sustainable_volume_m3:,.0f} m³/year")
-        st.write(f"**Projected Annual Demand:** {projected_demand_m3_year:,.0f} m³/year")
-        if projected_demand_m3_year > sustainable_volume_m3:
-            st.error(f"Deficit: {projected_demand_m3_year - sustainable_volume_m3:,.0f} m³/year.")
+        if map_view_type == "Heatmap (Density)":
+             st.pydeck_chart(pdk.Deck(map_style='mapbox://styles/mapbox/dark-v9', initial_view_state=pdk.ViewState(latitude=map_df['latitude'].mean(), longitude=map_df['longitude'].mean(), zoom=5, pitch=50), layers=[pdk.Layer('HexagonLayer', data=map_df, get_position='[longitude, latitude]', radius=8000, elevation_scale=100, extruded=True, pickable=True)]))
         else:
-            st.success(f"Surplus: {sustainable_volume_m3 - projected_demand_m3_year:,.0f} m³/year.")
+            st.map(map_df, latitude='latitude', longitude='longitude', color='color', size='size')
+        st.info(info_text)
+
+    # --- TAB 2: At-a-Glance Dashboard ---
+    elif selected_tab == tabs[1]:
+        st.header("📊 At-a-Glance Dashboard")
+        st.write("Get a high-level overview of key water metrics for the selected region and time period.")
+        agency = st.selectbox("Filter by Agency:", [ALL] + sorted(stations_in_scope['agency_name'].unique().tolist()))
+        df_tab = df_filtered.copy()
+        if agency != ALL:
+            stations_tab = stations_in_scope[stations_in_scope['agency_name'] == agency]
+            df_tab = df_filtered[df_filtered['station_name'].isin(stations_tab['station_name'])]
+        if df_tab.empty:
+            st.warning(f"No data for agency: {agency}.")
+            st.stop()
         
-        # --- MODIFIED: Conditionally render AI button ---
-        if not st.session_state.get('ai_disabled', False):
-            if st.button("Generate Strategic Recommendations", key='strategic_ai'):
-                deficit_status = f"There is a projected annual deficit of {projected_demand_m3_year - sustainable_volume_m3:,.0f} m³." if projected_demand_m3_year > sustainable_volume_m3 else f"There is a projected annual surplus of {sustainable_volume_m3 - projected_demand_m3_year:,.0f} m³."
-                prompt = f"""
-                As a strategic consultant for a regional water authority, you are presented with the following scenario for an area of {area_influence} sq. km around station {gw_station_name}:
-                - Estimated Sustainable Annual Supply: {sustainable_volume_m3:,.0f} m³
-                - Projected Annual Demand: {projected_demand_m3_year:,.0f} m³
-                - Result: {deficit_status}
+        with card("Key Performance Indicators"):
+            cols = st.columns(4)
+            if 'groundwaterlevel_mbgl' in df_tab.columns and not df_tab['groundwaterlevel_mbgl'].dropna().empty:
+                gwl = df_tab['groundwaterlevel_mbgl'].dropna()
+                animated_metric(cols[0], "Avg GW Level", gwl.mean(), "m")
+                delta_val = gwl.iloc[-1] - gwl.iloc[0] if len(gwl) > 1 else None
+                animated_metric(cols[1], "Most Recent GW Level", gwl.iloc[-1], "m", delta=f"{delta_val:.2f} m" if delta_val is not None else None, delta_color="inverse")
+            if 'rainfall_mm' in df_tab.columns and not df_tab['rainfall_mm'].dropna().empty: animated_metric(cols[2], "Total Rainfall", df_tab['rainfall_mm'].sum(), "mm")
+            if 'temperature_c' in df_tab.columns and not df_tab['temperature_c'].dropna().empty: animated_metric(cols[3], "Avg Temperature", df_tab['temperature_c'].mean(), "°C")
+            
+            cols2 = st.columns(4) # Place other metrics in a new row if needed
+            if 'ph' in df_tab.columns and not df_tab['ph'].dropna().empty: animated_metric(cols2[0], "Avg pH", df_tab['ph'].mean())
+            if 'turbidity_ntu' in df_tab.columns and not df_tab['turbidity_ntu'].dropna().empty: animated_metric(cols2[1], "Latest Turbidity", df_tab['turbidity_ntu'].dropna().iloc[-1], "NTU")
+            if 'tds_ppm' in df_tab.columns and not df_tab['tds_ppm'].dropna().empty: animated_metric(cols2[2], "Latest TDS", df_tab['tds_ppm'].dropna().iloc[-1], "ppm")
 
-                Based on this supply-demand scenario, provide a set of strategic recommendations.
-                If there is a deficit, focus on:
-                1.  **Demand-Side Management**: Suggest 2-3 measures to reduce water consumption (e.g., for agriculture, domestic use).
-                2.  **Supply-Side Augmentation**: Suggest 2-3 measures to increase water availability (e.g., rainwater harvesting, wastewater treatment, new infrastructure).
-                
-                If there is a surplus, focus on:
-                1.  **Sustainable Allocation**: How can the surplus be allocated for economic growth while ensuring long-term sustainability?
-                2.  **Resilience Building**: How can the surplus be used to build resilience against future droughts or climate change?
+        with card("Agency Contribution"):
+            agency_dist = stations_in_scope['agency_name'].value_counts()
+            pull = [0.2 if idx == agency else 0 for idx in agency_dist.index]
+            fig_pie = px.pie(agency_dist, values=agency_dist.values, names=agency_dist.index, title='Monitored Stations by Agency', hole=0.4)
+            fig_pie.update_traces(pull=pull, textinfo='percent+label').update_layout(transition_duration=500, template="streamlit")
+            st.plotly_chart(fig_pie, use_container_width=True)
 
-                Provide clear, actionable recommendations in a markdown format.
-                """
-                analysis = get_gemini_analysis(prompt, api_key)
-                if analysis:
-                    st.markdown(analysis)
-                else:
-                    st.error("Failed to generate AI analysis. Please check your API key and try again.")
-    else:
-        st.info("Please select a single station to access detailed planning tools like Sustainable Yield and Scenario Modeling.")
 
-# --- Research Hub Tab ---
-elif selected_tab == tab_labels[4]:
-    st.header(f"Research Hub for: {header_location}")
-    st.subheader(f"Data for: {selected_range_label}")
-    if not single_station_mode:
-        station_count_research = int(df['station_count'].max()) if 'station_count' in df.columns else len(filtered_gw_stations)
-        st.info(f"Displaying **average** trends for **{station_count_research}** stations.")
+    # --- TAB 3: Policy & Governance ---
+    elif selected_tab == tabs[2]:
+        st.header("⚖️ Policy & Governance Insights")
+        st.write("Analyze regional water stress and long-term trends to inform policy decisions.")
         
-    st.markdown("#### Comprehensive Water Quality Analysis")
-    fig_quality = make_subplots(specs=[[{"secondary_y": True}]])
-    if 'ph' in df.columns: fig_quality.add_trace(go.Scatter(x=df['timestamp'], y=df['ph'], name='pH'), secondary_y=False)
-    if 'tds_ppm' in df.columns: fig_quality.add_trace(go.Scatter(x=df['timestamp'], y=df['tds_ppm'], name='TDS (ppm)'), secondary_y=True)
-    if 'turbidity_ntu' in df.columns: fig_quality.add_trace(go.Scatter(x=df['timestamp'], y=df['turbidity_ntu'], name='Turbidity (NTU)'), secondary_y=True)
-    
-    title_suffix = " (Regional Average)" if not single_station_mode else ""
-    fig_quality.update_layout(title_text=f"Water Quality Over Time{title_suffix}", 
-                              template='plotly_dark', legend_title_text='Parameters')
-    fig_quality.update_yaxes(title_text="pH Level", secondary_y=False)
-    fig_quality.update_yaxes(title_text="TDS (ppm) / Turbidity (NTU)", secondary_y=True)
-    st.plotly_chart(fig_quality, use_container_width=True)
-    
-    st.markdown("---")
-    # --- MODIFIED: Conditionally render AI feature ---
-    if not st.session_state.get('ai_disabled', False):
-        st.markdown("#### 🤖 AI Correlation Analyst")
-        st.write("Select two parameters to analyze their relationship.")
-        cols_for_corr = [col for col in ['groundwaterlevel_mbgl', 'rainfall_mm', 'temperature_c', 'ph', 'turbidity_ntu', 'tds_ppm'] if col in df.columns]
-        col1, col2 = st.columns(2)
-        param1 = col1.selectbox("Parameter 1:", cols_for_corr, index=0)
-        param2 = col2.selectbox("Parameter 2:", cols_for_corr, index=1 if len(cols_for_corr) > 1 else 0)
-        if st.button("Analyze Correlation with AI", key="corr_ai"):
-            corr_df = df[[param1, param2]].dropna()
-            if len(corr_df) > 2:
-                correlation = corr_df[param1].corr(corr_df[param2])
-                prompt_data = corr_df.tail(50).to_string()
-                prompt = f"""
-                As a research hydrologist, analyze the relationship between two parameters: '{param1}' and '{param2}'.
-                The calculated Pearson correlation coefficient is: **{correlation:.2f}**.
-
-                Here is a sample of the recent data:
-                {prompt_data}
-
-                Provide a scientific interpretation of this relationship:
-                1.  **Explain the Correlation**: Based on the correlation coefficient, describe the strength and direction of the relationship (e.g., strong positive, weak negative, no correlation).
-                2.  **Hydrological Context**: Explain the likely physical or chemical reasons for this relationship in a water resource system. For example, why would rainfall be correlated with groundwater level?
-                3.  **Implications for Research**: What might this relationship imply for water quality management or resource monitoring?
-
-                Format the response as a concise analysis.
-                """
-                analysis = get_gemini_analysis(prompt, api_key)
-                if analysis:
-                    st.markdown(f"### AI-Powered Correlation Analysis: `{param1}` vs. `{param2}`")
-                    st.markdown(analysis)
-                else:
-                    st.error("Failed to generate AI analysis. Please check your API key and try again.")
-            else:
-                st.warning("Not enough overlapping data points to analyze the correlation.")
-        st.markdown("---")
-
-    st.markdown("#### 💧 High-Accuracy Predictive Forecast")
-    if single_station_mode and 'groundwaterlevel_mbgl' in df_unfiltered.columns:
-        if 'forecast_generated' not in st.session_state:
-            st.session_state.forecast_generated = False
-        if 'forecast_results' not in st.session_state:
-            st.session_state.forecast_results = {}
-
-        forecast_df = df_unfiltered[['timestamp', 'groundwaterlevel_mbgl', 'rainfall_mm']].copy().set_index('timestamp').asfreq('D').interpolate()
-        forecast_days = st.slider("Days to forecast:", 7, 90, 30, key='forecast_slider_research')
-        
-        st.warning("Note: The SARIMAX model below uses fixed parameters. For best results, these should be tuned for each specific dataset (e.g., using `pmdarima.auto_arima`).")
-        
-        if st.button("Generate Accurate Forecast", key='forecast_button_research'):
-            with st.spinner(f"Running SARIMAX model for {forecast_days} days..."):
-                try:
-                    endog, exog = forecast_df['groundwaterlevel_mbgl'], forecast_df['rainfall_mm']
-                    
-                    order_params = (1, 1, 1)
-                    seasonal_order_params = (1, 1, 1, 12)
-                    
-                    model_fit = SARIMAX(endog, exog=exog, order=order_params, seasonal_order=seasonal_order_params).fit(disp=False)
-                    future_exog = pd.DataFrame({'rainfall_mm': [exog.mean()] * forecast_days}, index=pd.date_range(start=endog.index[-1] + pd.Timedelta(days=1), periods=forecast_days))
-                    forecast_obj = model_fit.get_forecast(steps=forecast_days, exog=future_exog)
-                    forecast_ci, forecast_values = forecast_obj.conf_int(), forecast_obj.predicted_mean
-                    st.success("✅ Forecast Generated Successfully!")
-                    
-                    fig_forecast = go.Figure()
-                    fig_forecast.add_trace(go.Scatter(x=forecast_ci.index.tolist() + forecast_ci.index.tolist()[::-1], y=forecast_ci.iloc[:, 1].tolist() + forecast_ci.iloc[:, 0].tolist()[::-1], fill='toself', fillcolor='rgba(0,100,80,0.2)', line=dict(color='rgba(255,255,255,0)'), name='Confidence Interval'))
-                    fig_forecast.add_trace(go.Scatter(x=df['timestamp'], y=df['groundwaterlevel_mbgl'], mode='lines', name=f'Historical Data ({selected_range_label})', line=dict(color='cyan')))
-                    fig_forecast.add_trace(go.Scatter(x=forecast_values.index, y=forecast_values, mode='lines', name='Forecasted Water Level', line=dict(color='orange', dash='dot')))
-                    fig_forecast.update_layout(title="Water Level Forecast vs. Historical Data", 
-                                               yaxis_title="Groundwater Level (mbgl)",
-                                               template='plotly_dark', legend_title_text='Data Series')
-                    
-                    st.session_state.forecast_results = {
-                        'fig': fig_forecast, 'endog': endog,
-                        'forecast_values': forecast_values, 'forecast_ci': forecast_ci,
-                        'forecast_days': forecast_days, 'order': order_params, 
-                        'seasonal_order': seasonal_order_params
-                    }
-                    st.session_state.forecast_generated = True
-                    # st.rerun() # We remove the rerun to prevent the tab switch feeling
-
-                except Exception as e:
-                    st.error(f"An error occurred during forecasting: {e}")
-                    st.session_state.forecast_generated = False
-
-        # --- MODIFIED: More robust check for forecast results ---
-        if st.session_state.get('forecast_generated', False) and 'fig' in st.session_state.get('forecast_results', {}):
-            results = st.session_state.forecast_results
-            st.plotly_chart(results['fig'], use_container_width=True)
-
-            st.markdown("#### Forecast Data")
-            forecast_table = pd.DataFrame({
-                'Predicted Level (mbgl)': results['forecast_values'],
-                'Lower Confidence (mbgl)': results['forecast_ci'].iloc[:, 0],
-                'Upper Confidence (mbgl)': results['forecast_ci'].iloc[:, 1]
-            })
-            st.dataframe(forecast_table.style.format("{:.2f}"))
-
-            @st.cache_data
-            def convert_df_to_csv(df):
-                return df.to_csv().encode('utf-8')
-
-            csv = convert_df_to_csv(forecast_table)
-            st.download_button(
-                label="📥 Export Forecast as CSV",
-                data=csv,
-                file_name=f"{gw_station_name}_forecast.csv",
-                mime='text/csv',
-            )
-            # --- MODIFIED: Conditionally render AI button ---
-            if not st.session_state.get('ai_disabled', False):
-                if st.button("Get AI Research Analysis of Forecast", key='forecast_analysis_ai'):
-                    results = st.session_state.forecast_results
-                    prompt_data = results['endog'].tail(30).to_string()
-                    forecast_summary = results['forecast_values'].to_string()
-                    prompt = f"""
-                    As a research scientist, analyze the following time-series forecast for groundwater level (mbgl) at station {gw_station_name}.
-                    
-                    **Recent Historical Data:**
-                    {prompt_data}
-
-                    **Forecasted Values for the next {results['forecast_days']} days:**
-                    {forecast_summary}
-
-                    The forecast was generated using a SARIMAX model with order={results['order']} and seasonal_order={results['seasonal_order']}. A confidence interval was also generated.
-
-                    Provide a research-oriented analysis:
-                    1.  **Forecast Interpretation**: What does the forecast predict (e.g., a continued decline, a seasonal recovery, stabilization)?
-                    2.  **Confidence Assessment**: What does the confidence interval imply about the certainty of the forecast?
-                    3.  **Model Implications**: Briefly comment on what the SARIMAX model parameters might suggest about the underlying data's properties (e.g., seasonality, trend).
-                    4.  **Further Research**: Suggest two potential research questions or avenues for further investigation based on these results.
-                    """
-                    analysis = get_gemini_analysis(prompt, api_key)
+        with card("Regional Groundwater Stress Hotspots"):
+            level = st.radio("Analyze by:", ("State", "River Basin"), horizontal=True)
+            group_col = 'state_name' if level == "State" else 'basin'
+            percentile = st.slider("Define 'Critical' Level (%):", 50, 95, 75, 5)
+            status = get_regional_status(ts_data, gw_stations_filtered, group_col, percentile / 100.0)
+            if not status.empty:
+                chart = alt.Chart(status).mark_bar().encode(
+                    x=alt.X(f'{group_col}:N', sort='-y', title=level, axis=alt.Axis(labelAngle=-45)),
+                    y=alt.Y('count:Q', title="Number of Stations"),
+                    color=alt.Color('status:N', scale=alt.Scale(domain=['Normal', 'Low/Critical'], range=['#5cb85c', '#d9534f'])),
+                    tooltip=[group_col, 'status', 'count']
+                ).properties(
+                    title=f'Groundwater Status by {level}'
+                ).configure_title(fontSize=36).interactive()
+                st.altair_chart(chart, use_container_width=True)
+                if st.button("Generate AI Policy Briefing", disabled=not st.session_state.get("gemini_key")):
+                    analysis = get_gemini_response(f"""As a senior water policy advisor, analyze this data on GW stress by {level}: {status.to_json(orient='records')}. Provide a briefing with: executive summary, key hotspots, 3 actionable policy recommendations, and data gaps.""")
                     if analysis:
-                        st.session_state.forecast_results['analysis'] = analysis
-                        # st.rerun() # We remove the rerun to prevent the tab switch feeling
-                    else:
-                        st.error("Failed to generate AI analysis. Please check your API key and try again.")
-                
-                if 'analysis' in st.session_state.forecast_results:
-                    st.markdown(st.session_state.forecast_results['analysis'])
+                        st.markdown(analysis)
 
-    else:
-        st.info("Predictive forecasting requires a consistent time-series from a single source. Please select a single station.")
+        with card("Long-Term Station Health Trends"):
+            with st.spinner("Analyzing long-term trends..."):
+                trends = calculate_long_term_station_trends(ts_data)
+            if not trends.empty:
+                c1, c2 = st.columns(2)
+                c1.error("Top 5 Declining Stations")
+                c1.dataframe(trends.sort_values('annual_trend_m', ascending=False).head(5))
+                c2.success("Top 5 Improving Stations")
+                c2.dataframe(trends.sort_values('annual_trend_m').head(5))
+            else:
+                st.info("No stations with sufficient historical data (>30 points) for long-term trend analysis were found in the current dataset.")
 
-# --- Public Info Tab ---
-elif selected_tab == tab_labels[5]:
-    st.header(f"Public Water Information for {header_location}")
-    st.subheader(f"Data for: {selected_range_label}")
-    if 'groundwaterlevel_mbgl' in df.columns:
+        with card("AI Policy Simulator & Advisor"):
+            if not st.session_state.ai_disabled:
+                policy_goal = st.selectbox("Select Policy Goal:", ["Increase Groundwater Recharge", "Reduce Water Depletion", "Improve Drought Resilience"])
+                if st.button(f"Generate Policy Brief for '{policy_goal}'", disabled=not st.session_state.get("gemini_key")):
+                    analysis = get_gemini_response(f"""As a water policy expert for India, create a detailed policy brief on **"{policy_goal}"**. Structure it with: Introduction, Key Challenges, 3-5 Strategic Interventions, Implementation Roadmap, and Conclusion.""")
+                    if analysis:
+                        st.markdown(analysis)
+            else:
+                st.info("Enable AI to use the Policy Simulator.")
+
+    # --- TAB 4: Strategic Planning ---
+    elif selected_tab == tabs[3]:
+        st.header("🏛️ Strategic Planning & Scenario Modeling")
+        st.write("Conduct long-term supply vs. demand analysis for a specific station's area of influence.")
         if not single_station_mode:
-            station_count_public = int(df['station_count'].max()) if 'station_count' in df.columns else len(filtered_gw_stations)
-            st.info(f"Displaying regional average status for **{station_count_public}** stations.")
-            
-        latest = df.iloc[-1]
-        st.markdown("#### Current Water Status")
+            st.info("Select a single station for planning tools.")
+            st.stop()
+        station_ts_data = df_base_filtered[df_base_filtered['station_name'] == station_name]
         
-        min_level = df['groundwaterlevel_mbgl'].min()
-        max_level = df['groundwaterlevel_mbgl'].max()
-        avg_level = df['groundwaterlevel_mbgl'].mean()
-        latest_level_val = latest['groundwaterlevel_mbgl']
-        title_text = "Current GW Level (mbgl)" if single_station_mode else "Current Regional Avg. GW Level (mbgl)"
+        with card(f"Long-Term Historical Trend for {station_name}"):
+            if not station_ts_data.empty:
+                line = alt.Chart(station_ts_data).mark_line(point=True).encode(x='timestamp:T', y=alt.Y('groundwaterlevel_mbgl:Q', title="GW Level (mbgl)"), tooltip=['timestamp', 'groundwaterlevel_mbgl']).properties(title='Historical Groundwater Level').interactive()
+                st.altair_chart(line, use_container_width=True)
 
-        fig_gauge = go.Figure(go.Indicator(
-            mode = "gauge+number",
-            value = latest_level_val,
-            title = {'text': title_text, 'font': {'size': 20}},
-            gauge = {
-                'axis': {'range': [min_level * 0.9, max_level * 1.1], 'tickwidth': 1, 'tickcolor': "white"},
-                'bar': {'color': "#277DA1"},
-                'steps' : [
-                    {'range': [min_level * 0.9, avg_level], 'color': "#57C4E5"},
-                    {'range': [avg_level, max_level * 1.1], 'color': "#F94144"}
-                ],
-                'threshold' : {'line': {'color': "red", 'width': 4}, 'thickness': 0.9, 'value': avg_level}
-            }))
-        fig_gauge.update_layout(margin=dict(l=20, r=20, t=50, b=20), template='plotly_dark')
-        st.plotly_chart(fig_gauge, use_container_width=True)
-        st.info("Lighter blue indicates water levels are better (lower mbgl) than the period average; Lighter red indicates they are worse (higher mbgl). The red line marks the average.")
-        
-        # --- MODIFIED: Conditionally render AI feature ---
-        if not st.session_state.get('ai_disabled', False):
-            st.markdown("#### 🤖 AI Summary for You")
-            if st.button("Get a Simple Summary", key='summary_button'):
-                latest_level = df['groundwaterlevel_mbgl'].dropna().iloc[-1]
-                avg_level = df['groundwaterlevel_mbgl'].mean()
-                prompt = f"""
-                You are a helpful assistant for a public water information portal. Your goal is to explain the water situation in simple, clear language that anyone can understand.
-
-                Here is the current data for {header_location}:
-                - The most recent average groundwater level is: {latest_level:.2f} meters below the ground.
-                - The average level over the last period ({selected_range_label}) was: {avg_level:.2f} meters below the ground.
-                - A HIGHER number means the water is DEEPER and thus less available.
-
-                Please provide a one-paragraph summary explaining what this means.
-                - Start by stating the current situation (e.g., "Currently, the water level is...").
-                - Compare the current level to the recent average. Is it better or worse than usual?
-                - End with a simple concluding sentence about the importance of using water wisely.
-                - Do not use technical jargon. Keep it very simple.
-                """
-                analysis = get_gemini_analysis(prompt, api_key)
-                if analysis:
-                    st.info(analysis)
-                else:
-                    st.error("Failed to generate summary. Please check your API key and try again.")
-    else:
-        st.warning("No groundwater level data available to display for this selection.")
-
-# --- Advanced Hydrology Tab ---
-elif selected_tab == tab_labels[6]:
-    st.header(f"Advanced Hydrological Analysis for: {header_location}")
-    if 'groundwaterlevel_mbgl' not in df_unfiltered.columns or df_unfiltered['groundwaterlevel_mbgl'].dropna().empty:
-        st.warning("This tab requires 'groundwaterlevel_mbgl' data, which is not available for this selection.")
-        st.stop()
-    
-    if not single_station_mode:
-        st.info("Advanced hydrology tools work best with a single station. Displaying aggregated regional analysis.")
-
-    hydro_df = df.copy().set_index('timestamp').asfreq('D').interpolate()
-    
-    st.markdown("### 1. Water Level Fluctuation & Volatility")
-    if len(hydro_df) > 90:
-        hydro_df['90_day_avg'] = hydro_df['groundwaterlevel_mbgl'].rolling(window=90).mean()
-        hydro_df['volatility'] = hydro_df['groundwaterlevel_mbgl'].rolling(window=90).std()
-
-        fig_fluctuation = make_subplots(specs=[[{"secondary_y": True}]])
-        
-        # Add traces
-        fig_fluctuation.add_trace(go.Scatter(x=hydro_df.index, y=hydro_df['groundwaterlevel_mbgl'], name='Daily Water Level', line=dict(color='skyblue')), secondary_y=False)
-        fig_fluctuation.add_trace(go.Scatter(x=hydro_df.index, y=hydro_df['90_day_avg'], name='90-Day Avg. Trend', line=dict(color='orange', dash='dot')), secondary_y=False)
-        fig_fluctuation.add_trace(go.Scatter(x=hydro_df.index, y=hydro_df['volatility'], name='90-Day Volatility', line=dict(color='lightgreen')), secondary_y=True)
-
-        # Set titles and labels
-        fig_fluctuation.update_layout(title_text="Water Level Fluctuation and Volatility", template='plotly_dark')
-        fig_fluctuation.update_yaxes(title_text="Groundwater Level (mbgl)", secondary_y=False)
-        fig_fluctuation.update_yaxes(title_text="Volatility (Std. Dev.)", secondary_y=True)
-        
-        st.plotly_chart(fig_fluctuation, use_container_width=True)
-        # --- MODIFIED: Conditionally render AI button ---
-        if not st.session_state.get('ai_disabled', False):
-            if st.button("Get AI Fluctuation Analysis", key="fluctuation_ai"):
-                prompt_data = hydro_df.tail(30).to_string() # Use recent data for prompt
-                prompt = f"""
-                Analyze the following recent water level data for station {gw_station_name}.
-                The data includes daily water level (mbgl), a 90-day average trendline, and 90-day volatility (standard deviation).
-                
-                Data snippet:
-                {prompt_data}
-
-                Based on this data, provide a brief analysis covering:
-                1. The current trend of the water level compared to its 90-day average.
-                2. The level of volatility. Is the water level stable or fluctuating significantly?
-                3. Any potential implications (e.g., signs of rapid depletion, recharge, or seasonal effects).
-                Keep the analysis concise and easy for a water resource manager to understand.
-                """
-                analysis = get_gemini_analysis(prompt, api_key)
+        with card("Sustainable Yield & Demand Modeling"):
+            st.subheader("2. Sustainable Yield Estimation")
+            sy_planning = st.number_input("Specific Yield (Sy):", 0.01, 0.50, 0.15, 0.01)
+            planning_df = station_ts_data.set_index('timestamp').asfreq('D').interpolate(method='time')
+            planning_df['gw_level_change'] = planning_df['groundwaterlevel_mbgl'].diff()
+            planning_df['recharge_mm'] = planning_df.apply(lambda r: (r['gw_level_change'] * -1 * sy_planning * 1000) if r['gw_level_change'] < 0 else 0, axis=1)
+            avg_annual_recharge = planning_df['recharge_mm'].resample('Y').sum().mean()
+            sustainable_yield_mm = avg_annual_recharge * 0.7
+            c1, c2 = st.columns(2)
+            c1.metric("Avg Est. Annual Recharge", f"{avg_annual_recharge:.2f} mm/year")
+            c2.metric("Est. Sustainable Yield", f"{sustainable_yield_mm:.2f} mm/year")
+            st.subheader(f"3. Water Balance Scenario Modeling")
+            area = st.number_input("Area of Influence (sq. km):", 0.1, 1000.0, 10.0, 1.0)
+            sustainable_volume_m3 = (sustainable_yield_mm / 1000) * (area * 1_000_000)
+            st.subheader("4. Demand Modeling")
+            c5, c6, c7 = st.columns(3)
+            agri_demand_m3 = c5.number_input("Agri. Demand (m³):", value=50000)
+            ind_demand_m3 = c6.number_input("Ind. Demand (m³):", value=20000)
+            dom_demand_m3 = c7.number_input("Dom. Demand (m³):", value=30000)
+            total_demand = agri_demand_m3 + ind_demand_m3 + dom_demand_m3
+            balance = sustainable_volume_m3 - total_demand
+            st.subheader("5. Water Balance Results")
+            fig_balance = go.Figure(data=[go.Bar(name='Sustainable Supply', x=['Water Balance'], y=[sustainable_volume_m3]), go.Bar(name='Projected Demand', x=['Water Balance'], y=[total_demand])])
+            fig_balance.update_layout(barmode='group', title='Annual Supply vs. Demand', template='plotly_dark', transition_duration=500)
+            st.plotly_chart(fig_balance, use_container_width=True)
+            if balance > 0:
+                st.success(f"**Projected Surplus: {balance:,.0f} m³/year**")
+            else:
+                st.error(f"**Projected Deficit: {abs(balance):,.0f} m³/year**")
+            if st.button("Generate AI Strategic Recommendations", disabled=not st.session_state.get("gemini_key")):
+                analysis = get_gemini_response(f"""As a water consultant, analyze this scenario for {station_name}: Supply={sustainable_volume_m3:,.0f} m³, Demand={total_demand:,.0f} m³, Balance={balance:,.0f} m³/year. Provide recommendations for a deficit or surplus.""")
                 if analysis:
                     st.markdown(analysis)
-                else:
-                    st.error("Failed to generate AI analysis. Please check your API key and try again.")
-    else:
-        st.info("At least 90 days of data are required to calculate fluctuation and volatility.")
-    st.markdown("---")
 
-    st.markdown("### 2. Smoothed Trend Analysis (EWMA)")
-    ewma_span = st.slider("Select EWMA Span (days):", 7, 180, 30, key='ewma_span')
-    hydro_df['ewma'] = hydro_df['groundwaterlevel_mbgl'].ewm(span=ewma_span, adjust=False).mean()
-    fig_ewma = go.Figure()
-    fig_ewma.add_trace(go.Scatter(x=hydro_df.index, y=hydro_df['groundwaterlevel_mbgl'], mode='lines', name='Daily GW Level', opacity=0.5, line=dict(color='cyan', width=1)))
-    fig_ewma.add_trace(go.Scatter(x=hydro_df.index, y=hydro_df['ewma'], mode='lines', name=f'{ewma_span}-Day EWMA Trend', line=dict(color='yellow', width=3)))
-    fig_ewma.update_layout(title="Exponentially Weighted Moving Average Trend", yaxis_title="Groundwater Level (mbgl)", template='plotly_dark')
-    st.plotly_chart(fig_ewma, use_container_width=True)
-    st.markdown("---")
-    
-    if single_station_mode:
-        st.markdown(f"### 3. Seasonal Aquifer Performance for '{gw_station_name}'")
-        monsoon_data = analyze_monsoon_performance(df_unfiltered)
-        if not monsoon_data.empty:
-            fig_monsoon = go.Figure()
-            fig_monsoon.add_trace(go.Bar(x=monsoon_data['year'], y=monsoon_data['pre_monsoon_level'], name='Pre-Monsoon Level', marker_color='brown'))
-            fig_monsoon.add_trace(go.Bar(x=monsoon_data['year'], y=monsoon_data['post_monsoon_level'], name='Post-Monsoon Level', marker_color='blue'))
-            fig_monsoon.update_layout(barmode='group', title='Pre vs. Post Monsoon Water Levels', yaxis_title='GW Level (mbgl)', template='plotly_dark')
-            st.plotly_chart(fig_monsoon, use_container_width=True)
-            
-            st.metric("Average Monsoon Recharge Effect", f"{monsoon_data['recharge_effect_m'].mean():.2f} m")
-            st.dataframe(monsoon_data)
-        else:
-            st.info("Insufficient data across pre and post-monsoon seasons to perform analysis.")
-        st.markdown("---")
+    # --- TAB 5: Research Hub ---
+    elif selected_tab == tabs[4]:
+        st.header("🔬 Research Hub & Advanced Analytics")
+        st.write("Dive deep into water quality analysis, parameter correlations, and predictive forecasting.")
 
-        st.markdown(f"### 4. Historical Drought Event Analysis for '{gw_station_name}'")
-        drought_percentile = st.slider("Define Drought Threshold (Percentile)", 70, 99, 85)
-        drought_events = detect_drought_events(df_unfiltered, drought_percentile)
-        if drought_events:
-            st.warning(f"Detected {len(drought_events)} significant drought periods (water level > {drought_percentile}th percentile).")
-            st.dataframe(pd.DataFrame(drought_events))
-        else:
-            st.success("No significant drought periods detected based on the current threshold.")
-    else:
-        st.info("Please select a single station for Seasonal Performance and Drought Event analysis.")
-        
-# --- NEW: Generate Full Report Tab ---
-elif selected_tab == tab_labels[7]:
-    st.header(f"📋 Consolidated Intelligence Report")
-    
-    if st.button("➕ Generate Full Report for Current Selection"):
-        report = {
-            "header": f"Water Intelligence Report for: {header_location}",
-            "filters": {
-                "State": state, "District": district, "River Basin": basin,
-                "Station": gw_station_name if single_station_mode else f"{len(filtered_gw_stations)} stations",
-                "Time Period": selected_range_label
-            },
-            "summary_metrics": {},
-            "policy_insights": {},
-            "long_term_trend": "N/A (Select single station)",
-            "forecast": "N/A (Generate on Research Hub tab first)"
-        }
-        
-        # At-a-Glance
-        if 'groundwaterlevel_mbgl' in df.columns and not df['groundwaterlevel_mbgl'].dropna().empty:
-            report["summary_metrics"]["Avg Water Level (mbgl)"] = f"{df['groundwaterlevel_mbgl'].mean():.2f} m"
-            report["summary_metrics"]["Most Recent Level (mbgl)"] = f"{df['groundwaterlevel_mbgl'].dropna().iloc[-1]:.2f} m"
-        if 'rainfall_mm' in df.columns and not df['rainfall_mm'].dropna().empty:
-            report["summary_metrics"]["Avg Rainfall"] = f"{df['rainfall_mm'].mean():.2f} mm"
-        
-        # Policy Insights
-        status_counts = get_regional_status_summary(ts_data, gw_stations, group_by_col='state_name')
-        if not status_counts.empty:
-            critical_df = status_counts[status_counts['status'] == 'Low/Critical']
-            if not critical_df.empty:
-                top_stressed_state = critical_df.sort_values('count', ascending=False).iloc[0]['state_name']
-                report["policy_insights"]["Top Stressed State"] = top_stressed_state
-        
-        # Long-term trend for single station
-        if single_station_mode:
-            trends = calculate_trend_stations(ts_data[ts_data['station_name'] == gw_station_name])
-            if not trends.empty:
-                trend_val = trends.iloc[0]['annual_trend_m']
-                report["long_term_trend"] = f"{trend_val:.3f} m/year change"
-        
-        # Forecast
-        if st.session_state.get('forecast_generated', False):
-            results = st.session_state.forecast_results
-            forecast_end_val = results['forecast_values'].iloc[-1]
-            report["forecast"] = f"Next {results['forecast_days']} days: Forecasted to reach {forecast_end_val:.2f} mbgl"
-            
-        st.session_state['report_data'] = report
+        with card("1. Comprehensive Water Quality Analysis"):
+            df_plot = df_filtered if single_station_mode else df_filtered.groupby('timestamp').mean(numeric_only=True).reset_index()
+            fig_quality = make_subplots(specs=[[{"secondary_y": True}]])
+            if 'ph' in df_plot.columns: fig_quality.add_trace(go.Scatter(x=df_plot['timestamp'], y=df_plot['ph'], name='pH'), secondary_y=False)
+            if 'tds_ppm' in df_plot.columns: fig_quality.add_trace(go.Scatter(x=df_plot['timestamp'], y=df_plot['tds_ppm'], name='TDS (ppm)'), secondary_y=True)
+            if 'turbidity_ntu' in df_plot.columns: fig_quality.add_trace(go.Scatter(x=df_plot['timestamp'], y=df_plot['turbidity_ntu'], name='Turbidity (NTU)'), secondary_y=True)
+            fig_quality.update_layout(title_text="Water Quality Parameters Over Time", template='plotly_dark', transition_duration=500)
+            fig_quality.update_yaxes(title_text="pH Level", secondary_y=False); fig_quality.update_yaxes(title_text="TDS / Turbidity", secondary_y=True)
+            st.plotly_chart(fig_quality, use_container_width=True)
 
-    if 'report_data' in st.session_state:
-        report_data = st.session_state['report_data']
-        st.subheader(report_data['header'])
-        st.markdown("---")
-        
-        st.markdown("#### Selection Criteria")
-        st.json(report_data['filters'])
-        
-        st.markdown("#### Summary Metrics")
-        st.json(report_data['summary_metrics'])
-        
-        st.markdown("#### Key Insights")
-        col1, col2 = st.columns(2)
-        col1.metric("Top Stressed State", report_data.get("policy_insights", {}).get("Top Stressed State", "N/A"))
-        col2.metric("Long-Term Trend", report_data["long_term_trend"])
-        
-        st.metric("Short-Term Forecast", report_data["forecast"])
-        st.markdown("---")
+        with card("2. AI Correlation Analyst"):
+            if not st.session_state.ai_disabled:
+                cols = [col for col in ['groundwaterlevel_mbgl', 'rainfall_mm', 'temperature_c', 'ph', 'turbidity_ntu', 'tds_ppm'] if col in df_filtered.columns]
+                c1, c2 = st.columns(2); p1 = c1.selectbox("Parameter 1:", cols); p2 = c2.selectbox("Parameter 2:", cols, index=1 if len(cols)>1 else 0)
+                if st.button("Analyze Correlation with AI", disabled=not st.session_state.get("gemini_key")):
+                    corr_df = df_filtered[[p1, p2]].dropna()
+                    if len(corr_df) > 1:
+                        corr = corr_df.corr().iloc[0, 1]
+                        st.metric(f"Pearson Correlation between {p1} and {p2}", f"{corr:.3f}")
+                        prompt = f"""As a research hydrologist, analyze the relationship between '{p1}' and '{p2}' (Pearson correlation: {corr:.2f}). Explain the correlation, its hydrological context, and research implications."""
+                        analysis = get_gemini_response(prompt)
+                        if analysis:
+                            st.markdown(analysis)
+                    else: st.warning("Not enough overlapping data for correlation.")
+            else: st.info("Enable AI to use the Correlation Analyst.")
 
-        # Download button
-        report_json = json.dumps(report_data, indent=2)
-        st.download_button(
-            label="📥 Download Report Data (JSON)",
-            data=report_json,
-            file_name=f"water_report_{header_location.replace(' ', '_').lower()}.json",
-            mime="application/json"
-        )
+        with card("3. High-Accuracy Predictive Forecast"):
+            st.warning("Note: This forecast uses a generalized SARIMAX model for rapid analysis. For scientific or operational use, model parameters should be tuned specifically for each time-series dataset.")
+            if not single_station_mode:
+                st.info("Select a single station for forecasting.")
+            else:
+                days = st.slider("Days to forecast:", 7, 180, 30)
+                if st.button("Generate Forecast", disabled=not st.session_state.get("gemini_key")):
+                    with st.spinner("Running SARIMAX model..."):
+                        try:
+                            df_f = df_filtered[['timestamp', 'groundwaterlevel_mbgl']].set_index('timestamp').asfreq('D').interpolate(method='time')
+                            if len(df_f) < 24: st.error("Forecasting failed: Requires at least 24 data points.")
+                            else:
+                                fit = SARIMAX(df_f['groundwaterlevel_mbgl'], order=(1,1,1), seasonal_order=(1,1,1,12)).fit(disp=False)
+                                pred, pred_ci = fit.get_forecast(steps=days), fit.get_forecast(steps=days).conf_int()
+                                fig = go.Figure()
+                                fig.add_trace(go.Scatter(x=df_f.index, y=df_f['groundwaterlevel_mbgl'], name='Historical Data', line=dict(color='cyan')))
+                                fig.add_trace(go.Scatter(x=pred.predicted_mean.index, y=pred.predicted_mean, name='Forecast', line=dict(color='orange', dash='dot')))
+                                fig.add_trace(go.Scatter(x=pred_ci.index, y=pred_ci.iloc[:, 1], fill=None, mode='lines', line_color='rgba(255,165,0,0.3)', showlegend=False))
+                                fig.add_trace(go.Scatter(x=pred_ci.index, y=pred_ci.iloc[:, 0], fill='tonexty', name='95% Confidence Interval', mode='lines', line_color='rgba(255,165,0,0.3)'))
+                                fig.update_layout(title=f"Water Level Forecast for {station_name}", template='plotly_dark', transition_duration=500)
+                                st.plotly_chart(fig, use_container_width=True)
+                                st.session_state['forecast_results'] = pred.summary_frame(); st.dataframe(st.session_state['forecast_results'])
+                        except Exception as e: st.error(f"Forecasting failed. Error: {e}")
 
+
+    # --- TAB 6: Public Info ---
+    elif selected_tab == tabs[5]:
+        st.header(f"💧 Public Water Information Center")
+        st.write("Understand the current water situation in your area with simple, easy-to-read gauges.")
+        
+        with card("Current Water Status Gauges"):
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                if 'groundwaterlevel_mbgl' in df_filtered.columns and not df_filtered.dropna(subset=['groundwaterlevel_mbgl']).empty:
+                    latest, avg = df_filtered.dropna(subset=['groundwaterlevel_mbgl']).iloc[-1]['groundwaterlevel_mbgl'], df_filtered['groundwaterlevel_mbgl'].mean()
+                    p10, p90 = df_filtered['groundwaterlevel_mbgl'].quantile(0.1), df_filtered['groundwaterlevel_mbgl'].quantile(0.9)
+                    fig_gauge = go.Figure(go.Indicator(mode="gauge+number", value=latest, title={'text': "GW Level (mbgl)"}, gauge={'axis': {'range': [p10, p90]}, 'steps': [{'range': [p10, avg], 'color': "lightgreen"}, {'range': [avg, p90], 'color': "lightcoral"}]}))
+                    st.plotly_chart(fig_gauge, use_container_width=True)
+                else: st.info("No GW Level data.")
+            with c2:
+                if 'ph' in df_filtered.columns and not df_filtered.dropna(subset=['ph']).empty:
+                    latest_ph = df_filtered.dropna(subset=['ph']).iloc[-1]['ph']
+                    fig_ph = go.Figure(go.Indicator(mode="gauge+number", value=latest_ph, title={'text': "Water pH Level"}, gauge={'axis': {'range': [5, 9]}, 'steps': [{'range': [5, 6.5], 'color': "lightcoral"}, {'range': [6.5, 8.5], 'color': 'lightgreen'}, {'range': [8.5, 9], 'color': 'lightcoral'}]}))
+                    st.plotly_chart(fig_ph, use_container_width=True)
+                else: st.info("No pH data.")
+            with c3:
+                if 'tds_ppm' in df_filtered.columns and not df_filtered.dropna(subset=['tds_ppm']).empty:
+                    latest_tds = df_filtered.dropna(subset=['tds_ppm']).iloc[-1]['tds_ppm']
+                    fig_tds = go.Figure(go.Indicator(mode="gauge+number", value=latest_tds, title={'text': "TDS (ppm)"}, gauge={'axis': {'range': [0, 1000]}, 'steps': [{'range': [0, 500], 'color': "lightgreen"}, {'range': [500, 1000], 'color': 'lightcoral'}]}))
+                    st.plotly_chart(fig_tds, use_container_width=True)
+                else: st.info("No TDS data.")
+            st.info("Green zones on gauges indicate desirable ranges, while red indicates levels that may require attention.")
+
+        with card("💡 What This Means For You & AI-Powered Advice"):
+            if not st.session_state.ai_disabled:
+                if st.button("Get a Simple AI Summary of the Water Situation", disabled=not st.session_state.get("gemini_key")):
+                    prompt_data = {'GW Level': f"{df_filtered['groundwaterlevel_mbgl'].dropna().iloc[-1]:.2f} mbgl" if 'groundwaterlevel_mbgl' in df_filtered.columns and not df_filtered['groundwaterlevel_mbgl'].dropna().empty else "N/A", 'pH': f"{df_filtered['ph'].dropna().iloc[-1]:.2f}" if 'ph' in df_filtered.columns and not df_filtered['ph'].dropna().empty else "N/A", 'TDS': f"{df_filtered['tds_ppm'].dropna().iloc[-1]:.2f} ppm" if 'tds_ppm' in df_filtered.columns and not df_filtered['tds_ppm'].dropna().empty else "N/A"}
+                    prompt = f"""As a public information assistant, explain the local water situation in simple, non-technical language based on: {prompt_data}. Explain water availability (higher mbgl is worse), quality (pH ideal 6.5-8.5, TDS ideal < 500 ppm), give a one-sentence summary, and a daily tip related to the data."""
+                    analysis = get_gemini_response(prompt)
+                    if analysis:
+                        st.info(analysis)
+            else: st.info("Enable AI features for a simple summary.")
+
+    # --- TAB 7: Advanced Hydrology ---
+    elif selected_tab == tabs[6]:
+        st.header("🌊 Advanced Hydrology Analysis")
+        st.write("Explore detailed hydrological characteristics like volatility, seasonal performance, and historical drought events.")
+        if not single_station_mode: st.info("Select a single station for advanced hydrology tools."); st.stop()
+        df_hydro = df_filtered.set_index('timestamp').asfreq('D').interpolate(method='time')
+
+        with card("1. Water Level Fluctuation & Volatility (90-Day Rolling Window)"):
+            df_hydro['90_day_avg'] = df_hydro['groundwaterlevel_mbgl'].rolling(90).mean(); df_hydro['volatility'] = df_hydro['groundwaterlevel_mbgl'].rolling(90).std()
+            fig_vol = make_subplots(specs=[[{"secondary_y": True}]])
+            fig_vol.add_trace(go.Scatter(x=df_hydro.index, y=df_hydro['groundwaterlevel_mbgl'], name='Daily Level'), secondary_y=False)
+            fig_vol.add_trace(go.Scatter(x=df_hydro.index, y=df_hydro['90_day_avg'], name='90-Day Avg Trend', line=dict(dash='dot', color='orange')), secondary_y=False)
+            fig_vol.add_trace(go.Scatter(x=df_hydro.index, y=df_hydro['volatility'], name='90-Day Volatility', line=dict(color='lightgreen')), secondary_y=True)
+            fig_vol.update_layout(title="Water Level vs. 90-Day Volatility", template='plotly_dark', transition_duration=500); fig_vol.update_yaxes(title_text="GW Level (mbgl)", secondary_y=False); fig_vol.update_yaxes(title_text="Volatility (Std. Dev.)", secondary_y=True)
+            st.plotly_chart(fig_vol, use_container_width=True)
+
+        with card("2. Smoothed Trend Analysis (EWMA)"):
+            ewma_span = st.slider("Select EWMA Span (days):", 7, 180, 30, key='ewma_span')
+            df_hydro['ewma'] = df_hydro['groundwaterlevel_mbgl'].ewm(span=ewma_span, adjust=False).mean()
+            fig_ewma = px.line(df_hydro, y=['groundwaterlevel_mbgl', 'ewma'], title="Exponentially Weighted Moving Average Trend", template='plotly_dark')
+            fig_ewma.update_layout(transition_duration=500)
+            st.plotly_chart(fig_ewma, use_container_width=True)
+
+        with card("3. Seasonal Aquifer Performance (Pre- vs. Post-Monsoon)"):
+            monsoon = analyze_monsoon_performance(df_base_filtered)
+            if not monsoon.empty:
+                st.metric("Average Monsoon Recharge Effect", f"{monsoon['recharge_effect_m'].mean():.2f} m")
+                fig_monsoon = px.bar(monsoon, x='year', y=['pre_monsoon_level_mbgl', 'post_monsoon_level_mbgl'], barmode='group', title='Pre vs. Post Monsoon Water Levels', template='plotly_dark')
+                fig_monsoon.update_layout(transition_duration=500); st.plotly_chart(fig_monsoon, use_container_width=True); st.dataframe(monsoon)
+            else: st.info("Insufficient seasonal data for monsoon analysis.")
+
+        with card("4. Historical Drought Event Analysis"):
+            drought_p = st.slider("Define Drought Threshold (% of deepest historical levels):", 70, 99, 85)
+            droughts = detect_drought_events(df_base_filtered, drought_p)
+            if droughts: st.warning(f"Detected {len(droughts)} significant drought periods."); st.dataframe(pd.DataFrame(droughts))
+            else: st.success("No significant drought periods detected.")
+
+
+    # --- TAB 8: Full Report ---
+    elif selected_tab == tabs[7]:
+        st.header("📋 Generate Consolidated Intelligence Report")
+        st.write("Compile all key findings from the selected data into a single, downloadable report.")
+        if st.button("➕ Generate Full Report for Current Selection"):
+            with st.spinner("Compiling data and insights..."):
+                report = {"report_generated_on": datetime.now().isoformat(), "selection_filters": {"State": state, "District": district, "Basin": basin, "Station": station_name, "Time Period": selected_range_label}, "key_performance_indicators": {}, "long_term_trends": "N/A for multiple stations.", "forecast_summary": "Not generated.", "policy_summary": {}}
+                if 'groundwaterlevel_mbgl' in df_filtered: report["key_performance_indicators"]["avg_gw_level_mbgl"] = f"{df_filtered['groundwaterlevel_mbgl'].mean():.2f}"
+                if 'rainfall_mm' in df_filtered: report["key_performance_indicators"]["total_rainfall_mm"] = f"{df_filtered['rainfall_mm'].sum():.2f}"
+                if single_station_mode:
+                    trends = calculate_long_term_station_trends(df_base_filtered)
+                    if not trends.empty: report["long_term_trends"] = f"{trends.iloc[0]['annual_trend_m']:.3f} m/year"
+                status_report = get_regional_status(ts_data, gw_stations_filtered, 'state_name', 0.75)
+                report['policy_summary'] = status_report.to_dict('records')
+                if 'forecast_results' in st.session_state:
+                    forecast_df = st.session_state['forecast_results']
+                    report["forecast_summary"] = {"days_forecasted": len(forecast_df), "final_predicted_level": f"{forecast_df['mean'].iloc[-1]:.2f} mbgl"}
+                st.session_state['report_data'] = report; st.success("Report generated successfully!")
+        if 'report_data' in st.session_state:
+            report_data = st.session_state['report_data']
+            st.subheader("Consolidated Report"); st.markdown("---")
+            st.markdown("#### Selection Criteria"); st.json(report_data['selection_filters'])
+            st.markdown("#### Summary Metrics"); st.json(report_data['key_performance_indicators'])
+            st.markdown("#### Key Insights")
+            c1, c2 = st.columns(2)
+            top_stressed_df = pd.DataFrame(report_data.get('policy_summary', [])).sort_values('count', ascending=False)
+            top_stressed = top_stressed_df.iloc[0]['state_name'] if not top_stressed_df.empty else "N/A"
+            c1.metric("Top Stressed State (Example)", top_stressed)
+            c2.metric("Long-Term Trend", report_data["long_term_trends"])
+            st.metric("Short-Term Forecast", report_data["forecast_summary"] if isinstance(report_data["forecast_summary"], str) else report_data["forecast_summary"].get("final_predicted_level", "N/A"))
+            st.markdown("---")
+            st.download_button(label="📥 Download Full Report (JSON)", data=json.dumps(report_data, indent=2), file_name=f"water_report.json", mime="application/json")
+            if st.button("Generate AI Executive Summary of Report", disabled=not st.session_state.get("gemini_key")):
+                prompt = f"""Analyze the following JSON report on water resources and generate a concise executive summary for a high-level government official. Focus on the most critical findings and actionable insights. Report Data: {json.dumps(st.session_state['report_data'])}"""
+                summary = get_gemini_response(prompt)
+                if summary:
+                    st.subheader("🤖 AI-Generated Executive Summary"); st.markdown(summary)
+
+    st.markdown("</div>", unsafe_allow_html=True) # End fade-in wrapper
 

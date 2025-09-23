@@ -1,10 +1,10 @@
-fpdf
 streamlit
 pandas
 numpy
 plotly
-folium
-streamlit-folium
-statsmodels
-scikit-learn
+pydeck
+altair
+streamlit-lottie
 google-generativeai
+scikit-learn
+statsmodels
